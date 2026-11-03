@@ -1,0 +1,23 @@
+# Casi di lavoro ed esecuzioni locali (mantiene solo la cartella vuota runs/)
+runs/*
+!runs/.gitkeep
+
+# Variabili d'ambiente e credenziali locali
+.env
+.env.*
+!.env.example
+
+# Impostazioni locali non condivise di Claude Code / IDE
+.claude/settings.local.json
+
+# Cache Python e file temporanei
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+
+# File di sistema (Windows / macOS / Linux)
+.DS_Store
+Thumbs.db
+Desktop.ini
+*~
