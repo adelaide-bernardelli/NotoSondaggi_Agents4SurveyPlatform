@@ -1,0 +1,539 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "metadata": {
+    "collection_id": "POL_BATTERIES_CORE_NOTO",
+    "title": "Batterie Politico-Elettorali Canoniche e Serie Storiche — Noto Sondaggi SRL",
+    "version": "1.0.0",
+    "description": "Libreria canonica di batterie di domande, formulari elettorali e scale di gradimento istituzionale e politico per le rilevazioni periodiche di Noto Sondaggi SRL, concepita per la salvaguardia della comparabilità delle serie storiche e il rispetto dei requisiti di trasparenza AGCOM (Delibera 256/10/CSP).",
+    "source_authority": "Noto Sondaggi SRL — Archivio Barometri Politici / Standard AGCOM",
+    "last_updated": "2026-11-05",
+    "default_missing_codes": {
+      "97": "Non applicabile (fuori target / filtro / non avente diritto)",
+      "98": "Non sa / Non conosce il leader / Nessuna opinione",
+      "99": "Preferisco non rispondere / Rifiuta / Segreto del voto"
+    }
+  },
+  "batteries": [
+    {
+      "id_battery": "POL_FIDUCIA_PREMIER",
+      "id_item": "POL_FIDUCIA_PREMIER",
+      "construct": "Fiducia nel Presidente del Consiglio dei Ministri in carica",
+      "question_text": "Quanto si fida del Presidente del Consiglio dei Ministri in carica?",
+      "question_type": "single_choice",
+      "scale_type": "ordinal",
+      "scale_points": 4,
+      "temporal_tracking": true,
+      "response_options": [
+        {
+          "code": "1",
+          "label": "Molta fiducia"
+        },
+        {
+          "code": "2",
+          "label": "Abbastanza fiducia"
+        },
+        {
+          "code": "3",
+          "label": "Poca fiducia"
+        },
+        {
+          "code": "4",
+          "label": "Nessuna fiducia"
+        }
+      ],
+      "missing_codes": [
+        {
+          "code": "97",
+          "label": "Non applicabile"
+        },
+        {
+          "code": "98",
+          "label": "Non sa / Non conosce / Senza opinione"
+        },
+        {
+          "code": "99",
+          "label": "Preferisco non rispondere / Rifiuta"
+        }
+      ],
+      "alternative_numeric_scale": {
+        "scale_points": 10,
+        "min_value": 1,
+        "max_value": 10,
+        "min_label": "Nessuna fiducia (1)",
+        "max_label": "Piena fiducia (10)"
+      },
+      "filter_condition": "Posta a tutti i rispondenti",
+      "comparability": "Serie storica fondamentale del Barometro Politico periodico di Noto Sondaggi. La scala verbale a 4 punti garantisce la massima stabilità metodologica per il calcolo dell'indice di fiducia netto (Molta + Abbastanza vs Poca + Nessuna). Non alterare la formulazione letterale.",
+      "regia_notes": "REGIA: Leggere le alternative di risposta; in CATI registrare anche spontanea se chiara."
+    },
+    {
+      "id_battery": "POL_BATTERIA_LEADER",
+      "id_item": "POL_BATTERIA_LEADER",
+      "construct": "Batteria di fiducia nei principali leader delle forze politiche nazionali",
+      "question_text": "Per ciascuno dei seguenti leader politici, mi dica quanta fiducia ripone nella sua figura:",
+      "question_type": "matrix",
+      "scale_type": "ordinal",
+      "scale_points": 4,
+      "temporal_tracking": true,
+      "sub_items": [
+        {
+          "code": "SQ01",
+          "label": "Giorgia Meloni"
+        },
+        {
+          "code": "SQ02",
+          "label": "Elly Schlein"
+        },
+        {
+          "code": "SQ03",
+          "label": "Giuseppe Conte"
+        },
+        {
+          "code": "SQ04",
+          "label": "Antonio Tajani"
+        },
+        {
+          "code": "SQ05",
+          "label": "Matteo Salvini"
+        },
+        {
+          "code": "SQ06",
+          "label": "Nicola Fratoianni"
+        },
+        {
+          "code": "SQ07",
+          "label": "Angelo Bonelli"
+        },
+        {
+          "code": "SQ08",
+          "label": "Carlo Calenda"
+        },
+        {
+          "code": "SQ09",
+          "label": "Matteo Renzi"
+        }
+      ],
+      "response_options": [
+        {
+          "code": "1",
+          "label": "Molta fiducia"
+        },
+        {
+          "code": "2",
+          "label": "Abbastanza fiducia"
+        },
+        {
+          "code": "3",
+          "label": "Poca fiducia"
+        },
+        {
+          "code": "4",
+          "label": "Nessuna fiducia"
+        }
+      ],
+      "missing_codes": [
+        {
+          "code": "97",
+          "label": "Non applicabile"
+        },
+        {
+          "code": "98",
+          "label": "Non lo conosce abbastanza per esprimere un giudizio / Non sa"
+        },
+        {
+          "code": "99",
+          "label": "Preferisco non rispondere / Rifiuta"
+        }
+      ],
+      "filter_condition": "Posta a tutti i rispondenti",
+      "comparability": "Struttura matriciale standard delle indagini Noto Sondaggi per il calcolo periodico del ranking di gradimento dei leader. La lista dei nominativi viene periodicamente aggiornata in base al quadro parlamentare, ma la scala a 4 punti deve rimanere invariata.",
+      "regia_notes": "REGIA: Ruotare randomicamente l'ordine di lettura dei nominativi dei leader per neutralizzare l'effetto primacy/recency."
+    },
+    {
+      "id_battery": "POL_BATTERIA_ISTITUZIONI",
+      "id_item": "POL_BATTERIA_ISTITUZIONI",
+      "construct": "Batteria di fiducia nelle principali istituzioni repubblicane, sociali e sovranazionali",
+      "question_text": "Per ciascuna delle seguenti istituzioni, mi dica quanta fiducia ripone in essa:",
+      "question_type": "matrix",
+      "scale_type": "ordinal",
+      "scale_points": 4,
+      "temporal_tracking": true,
+      "sub_items": [
+        {
+          "code": "SQ01",
+          "label": "Presidente della Repubblica"
+        },
+        {
+          "code": "SQ02",
+          "label": "Parlamento (Camera e Senato)"
+        },
+        {
+          "code": "SQ03",
+          "label": "Governo"
+        },
+        {
+          "code": "SQ04",
+          "label": "Forze dell'Ordine (Carabinieri e Polizia)"
+        },
+        {
+          "code": "SQ05",
+          "label": "Magistratura"
+        },
+        {
+          "code": "SQ06",
+          "label": "Unione Europea"
+        },
+        {
+          "code": "SQ07",
+          "label": "Chiesa Cattolica / Istituzioni religiose"
+        },
+        {
+          "code": "SQ08",
+          "label": "Partiti politici"
+        }
+      ],
+      "response_options": [
+        {
+          "code": "1",
+          "label": "Molta fiducia"
+        },
+        {
+          "code": "2",
+          "label": "Abbastanza fiducia"
+        },
+        {
+          "code": "3",
+          "label": "Poca fiducia"
+        },
+        {
+          "code": "4",
+          "label": "Nessuna fiducia"
+        }
+      ],
+      "missing_codes": [
+        {
+          "code": "97",
+          "label": "Non applicabile"
+        },
+        {
+          "code": "98",
+          "label": "Non sa / Senza opinione / Non conosce"
+        },
+        {
+          "code": "99",
+          "label": "Preferisco non rispondere / Rifiuta"
+        }
+      ],
+      "filter_condition": "Posta a tutti i rispondenti",
+      "comparability": "Serie storica fondamentale del Barometro Istituzionale periodico di Noto Sondaggi per il monitoraggio della fiducia sistemica nei poteri dello Stato e nei corpi intermedi.",
+      "regia_notes": "REGIA: Ruotare randomicamente l'ordine di lettura delle istituzioni per neutralizzare l'effetto primacy/recency."
+    },
+    {
+      "id_battery": "POL_GIUDIZIO_GOVERNO",
+      "id_item": "POL_GIUDIZIO_GOVERNO",
+      "construct": "Valutazione complessiva dell'operato del Governo in carica",
+      "question_text": "Complessivamente, come valuta l'operato del Governo in carica fino a questo momento?",
+      "question_type": "single_choice",
+      "scale_type": "ordinal",
+      "scale_points": 4,
+      "temporal_tracking": true,
+      "response_options": [
+        {
+          "code": "1",
+          "label": "Molto positivo"
+        },
+        {
+          "code": "2",
+          "label": "Abbastanza positivo"
+        },
+        {
+          "code": "3",
+          "label": "Poco positivo"
+        },
+        {
+          "code": "4",
+          "label": "Per nulla positivo"
+        }
+      ],
+      "missing_codes": [
+        {
+          "code": "97",
+          "label": "Non applicabile"
+        },
+        {
+          "code": "98",
+          "label": "Non so / Senza opinione strutturata"
+        },
+        {
+          "code": "99",
+          "label": "Preferisco non rispondere / Rifiuta"
+        }
+      ],
+      "filter_condition": "Posta a tutti i rispondenti",
+      "comparability": "Indicatore standard del consenso all'esecutivo, pienamente confrontabile con le serie storiche dei governi della Repubblica Italiana censite da Noto Sondaggi."
+    },
+    {
+      "id_battery": "POL_AUTOCOLLOCAZIONE_SINISTRA_DESTRA",
+      "id_item": "POL_AUTOCOLLOCAZIONE_SINISTRA_DESTRA",
+      "construct": "Auto-collocazione politica su asse ideologico Sinistra-Destra",
+      "question_text": "In politica si parla spesso di sinistra e di destra. Pensando alle Sue idee politiche, dove si collocherebbe su una scala da 1 a 10, dove 1 significa Sinistra e 10 Destra?",
+      "question_type": "single_choice",
+      "scale_type": "interval",
+      "scale_points": 10,
+      "temporal_tracking": true,
+      "response_options": [
+        {
+          "code": "1",
+          "label": "1 - Sinistra"
+        },
+        {
+          "code": "2",
+          "label": "2"
+        },
+        {
+          "code": "3",
+          "label": "3"
+        },
+        {
+          "code": "4",
+          "label": "4"
+        },
+        {
+          "code": "5",
+          "label": "5 - Centro-sinistra"
+        },
+        {
+          "code": "6",
+          "label": "6 - Centro-destra"
+        },
+        {
+          "code": "7",
+          "label": "7"
+        },
+        {
+          "code": "8",
+          "label": "8"
+        },
+        {
+          "code": "9",
+          "label": "9"
+        },
+        {
+          "code": "10",
+          "label": "10 - Destra"
+        }
+      ],
+      "missing_codes": [
+        {
+          "code": "97",
+          "label": "Non applicabile"
+        },
+        {
+          "code": "98",
+          "label": "Non so / Non mi riconosco nella distinzione destra-sinistra"
+        },
+        {
+          "code": "99",
+          "label": "Preferisco non rispondere / Rifiuta"
+        }
+      ],
+      "filter_condition": "Posta a tutti i rispondenti",
+      "comparability": "Standard scientifico ITANES ed Eurobarometro per la misurazione della polarizzazione politica e della distribuzione ideologica dell'elettorato.",
+      "aggregations": {
+        "5_poli": {
+          "Sinistra (1-2)": ["1", "2"],
+          "Centro-sinistra (3-4)": ["3", "4"],
+          "Centro (5-6)": ["5", "6"],
+          "Centro-destra (7-8)": ["7", "8"],
+          "Destra (9-10)": ["9", "10"]
+        }
+      }
+    },
+    {
+      "id_battery": "POL_INTENZIONE_VOTO_POLITICHE",
+      "id_item": "POL_INTENZIONE_VOTO_POLITICHE",
+      "construct": "Intenzioni di voto per le elezioni politiche nazionali (Camera dei Deputati)",
+      "question_text": "Se oggi si tenessero le elezioni politiche per la Camera dei Deputati, per quale partito o lista voterebbe più probabilmente?",
+      "question_type": "single_choice",
+      "scale_type": "nominal",
+      "temporal_tracking": true,
+      "regulatory_compliance": "Delibera AGCOM 256/10/CSP",
+      "response_options": [
+        {
+          "code": "1",
+          "label": "Fratelli d'Italia"
+        },
+        {
+          "code": "2",
+          "label": "Partito Democratico"
+        },
+        {
+          "code": "3",
+          "label": "Movimento 5 Stelle"
+        },
+        {
+          "code": "4",
+          "label": "Lega per Salvini Premier"
+        },
+        {
+          "code": "5",
+          "label": "Forza Italia"
+        },
+        {
+          "code": "6",
+          "label": "Alleanza Verdi e Sinistra (AVS)"
+        },
+        {
+          "code": "7",
+          "label": "Azione - Carlo Calenda"
+        },
+        {
+          "code": "8",
+          "label": "Italia Viva - Matteo Renzi"
+        },
+        {
+          "code": "9",
+          "label": "+Europa"
+        },
+        {
+          "code": "10",
+          "label": "Noi Moderati"
+        },
+        {
+          "code": "11",
+          "label": "Altra lista / partito"
+        },
+        {
+          "code": "12",
+          "label": "Scheda bianca / Nulla"
+        },
+        {
+          "code": "13",
+          "label": "Non andrei a votare (Astensione)"
+        }
+      ],
+      "missing_codes": [
+        {
+          "code": "97",
+          "label": "Non applicabile (non avente diritto di voto in Italia)"
+        },
+        {
+          "code": "98",
+          "label": "Indeciso / Non so ancora per chi votare"
+        },
+        {
+          "code": "99",
+          "label": "Preferisco non rispondere / Segreto del voto"
+        }
+      ],
+      "filter_condition": "Posta a tutti i rispondenti aventi diritto al voto",
+      "comparability": "Costrutto elettorale normato dalla Delibera AGCOM 256/10/CSP. È fatto obbligo metodologico e legale di rilevare e dichiarare separatamente la quota dei voti validi, degli astenuti espliciti (13), delle schede bianche/nulle (12), degli indecisi (98) e di chi non risponde (99).",
+      "regia_notes": "REGIA: Ruotare randomicamente l'ordine di lettura delle forze politiche per evitare distorsioni da ordine di presentazione."
+    },
+    {
+      "id_battery": "POL_CLIMA_OPINIONE_DIREZIONE_PAESE",
+      "id_item": "POL_CLIMA_OPINIONE_DIREZIONE_PAESE",
+      "construct": "Clima d'opinione generale / Direzione del Paese (Right track / Wrong track)",
+      "question_text": "Pensando alla situazione generale dell'Italia, ritiene che il Paese stia andando nella direzione giusta o nella direzione sbagliata?",
+      "question_type": "single_choice",
+      "scale_type": "ordinal",
+      "scale_points": 3,
+      "temporal_tracking": true,
+      "response_options": [
+        {
+          "code": "1",
+          "label": "Nella direzione giusta"
+        },
+        {
+          "code": "2",
+          "label": "Stazionaria / Né giusta né sbagliata"
+        },
+        {
+          "code": "3",
+          "label": "Nella direzione sbagliata"
+        }
+      ],
+      "missing_codes": [
+        {
+          "code": "97",
+          "label": "Non applicabile"
+        },
+        {
+          "code": "98",
+          "label": "Non so / Difficile da dire"
+        },
+        {
+          "code": "99",
+          "label": "Preferisco non rispondere / Rifiuta"
+        }
+      ],
+      "filter_condition": "Posta a tutti i rispondenti",
+      "comparability": "Indicatore internazionale canonico di clima socio-politico ('right track / wrong track'), comparabile longitudinalmente nei barometri mensili Noto Sondaggi."
+    },
+    {
+      "id_battery": "POL_PROBLEMI_PRIORITARI",
+      "id_item": "POL_PROBLEMI_PRIORITARI",
+      "construct": "Priorità dell'agenda pubblica e problemi del Paese (Issue Salience)",
+      "question_text": "Quali sono a Suo avviso i problemi prioritari e più urgenti che il Governo dovrebbe affrontare in questo momento? (Indichi fino a un massimo di 2 risposte)",
+      "question_type": "multiple_choice",
+      "scale_type": "nominal",
+      "max_responses": 2,
+      "temporal_tracking": true,
+      "response_options": [
+        {
+          "code": "1",
+          "label": "Sanità pubblica e liste d'attesa"
+        },
+        {
+          "code": "2",
+          "label": "Inflazione, carovita e potere d'acquisto dei salari"
+        },
+        {
+          "code": "3",
+          "label": "Occupazione e disoccupazione giovanile"
+        },
+        {
+          "code": "4",
+          "label": "Pressione fiscale e riduzione delle tasse"
+        },
+        {
+          "code": "5",
+          "label": "Gestione dei flussi migratori"
+        },
+        {
+          "code": "6",
+          "label": "Sicurezza, criminalità e degrado urbano"
+        },
+        {
+          "code": "7",
+          "label": "Transizione ecologica e dissesto idrogeologico"
+        },
+        {
+          "code": "8",
+          "label": "Istruzione, edilizia scolastica e università"
+        },
+        {
+          "code": "9",
+          "label": "Efficienza della giustizia e riforme istituzionali"
+        }
+      ],
+      "missing_codes": [
+        {
+          "code": "97",
+          "label": "Non applicabile"
+        },
+        {
+          "code": "98",
+          "label": "Non so / Nessun problema prioritario in particolare"
+        },
+        {
+          "code": "99",
+          "label": "Preferisco non rispondere / Rifiuta"
+        }
+      ],
+      "filter_condition": "Posta a tutti i rispondenti",
+      "comparability": "Batteria canonica Noto per il tracciamento dei temi salienti (issue salience). Consente il confronto delle preoccupazioni dei cittadini nel medio-lungo periodo.",
+      "regia_notes": "REGIA: Scelta multipla, massimo 2 risposte. Ruotare randomicamente le opzioni."
+    }
+  ]
+}

@@ -1,0 +1,383 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "metadata": {
+    "standard_id": "DEM_STANDARD_ISTAT_EUROSTAT",
+    "title": "Standard Socio-Demografico Canonico Armonizzato — Noto Sondaggi SRL",
+    "version": "1.0.0",
+    "description": "Standard di armonizzazione per variabili anagrafiche e socio-demografiche di base nelle indagini campionarie (CATI/CAWI/CAPI), allineato alle classificazioni ufficiali Istat (Censimento della Popolazione, Rilevazione Continua Forze di Lavoro) ed Eurostat, con codifica uniforme dei codici di uscita.",
+    "source_authority": "Istat / Eurostat / Protocollo Metodologico Noto Sondaggi SRL",
+    "last_updated": "2026-11-05",
+    "default_missing_codes": {
+      "97": "Non applicabile (fuori target / filtro)",
+      "98": "Non so / Non ricorda / Nessuna risposta",
+      "99": "Preferisco non rispondere / Rifiuta"
+    }
+  },
+  "variables": [
+    {
+      "id_item": "DEM_GENERE",
+      "construct": "Genere / Sesso anagrafico del rispondente",
+      "question_text": "Indichi il Suo genere:",
+      "question_type": "single_choice",
+      "scale_type": "nominal",
+      "weighting_variable": true,
+      "response_options": [
+        {
+          "code": "1",
+          "label": "Uomo / Maschile"
+        },
+        {
+          "code": "2",
+          "label": "Donna / Femminile"
+        },
+        {
+          "code": "3",
+          "label": "Altra identità di genere"
+        }
+      ],
+      "missing_codes": [
+        {
+          "code": "97",
+          "label": "Non applicabile"
+        },
+        {
+          "code": "98",
+          "label": "Non so"
+        },
+        {
+          "code": "99",
+          "label": "Preferisco non rispondere / Rifiuta"
+        }
+      ],
+      "filter_condition": "Posta a tutti i rispondenti",
+      "comparability": "Standard universale di profilazione anagrafica Istat/Eurostat.",
+      "regia_notes": "In interviste telefoniche CATI, rilevabile dal tono di voce solo se inequivocabile; in caso di dubbio o in somministrazioni CAWI/CAPI, porre sempre la domanda esplicita."
+    },
+    {
+      "id_item": "DEM_ETA_CLASSI",
+      "construct": "Classe di età anagrafica (Standard Istat 6 classi)",
+      "question_text": "In quale delle seguenti fasce d'età rientra?",
+      "question_type": "single_choice",
+      "scale_type": "ordinal",
+      "weighting_variable": true,
+      "response_options": [
+        {
+          "code": "1",
+          "label": "18-24 anni"
+        },
+        {
+          "code": "2",
+          "label": "25-34 anni"
+        },
+        {
+          "code": "3",
+          "label": "35-44 anni"
+        },
+        {
+          "code": "4",
+          "label": "45-54 anni"
+        },
+        {
+          "code": "5",
+          "label": "55-64 anni"
+        },
+        {
+          "code": "6",
+          "label": "65 anni e oltre"
+        }
+      ],
+      "missing_codes": [
+        {
+          "code": "97",
+          "label": "Non applicabile"
+        },
+        {
+          "code": "98",
+          "label": "Non so"
+        },
+        {
+          "code": "99",
+          "label": "Preferisco non rispondere / Rifiuta"
+        }
+      ],
+      "filter_condition": "Posta a tutti i rispondenti maggiorenni",
+      "comparability": "Standard ufficiale Istat ed Eurostat per la post-stratificazione campionaria su popolazione elettorale o adulta (18+).",
+      "aggregations": {
+        "4_classi": {
+          "18-34 anni (Giovani)": ["1", "2"],
+          "35-54 anni (Adulti)": ["3", "4"],
+          "55-64 anni (Tardo-adulti)": ["5"],
+          "65 anni e oltre (Senior)": ["6"]
+        },
+        "3_classi": {
+          "18-34 anni": ["1", "2"],
+          "35-54 anni": ["3", "4"],
+          "55 anni e oltre": ["5", "6"]
+        }
+      }
+    },
+    {
+      "id_item": "DEM_ETA_CONTINUA",
+      "construct": "Età anagrafica puntuale continua / Anno di nascita",
+      "question_text": "Qual è il Suo anno di nascita? (oppure: Quanti anni ha compiuto?)",
+      "question_type": "numeric",
+      "scale_type": "ratio",
+      "weighting_variable": false,
+      "validation_rules": {
+        "min_value": 1900,
+        "max_value_expression": "anno_corrente - 18",
+        "input_format": "integer"
+      },
+      "response_options": [],
+      "missing_codes": [
+        {
+          "code": "97",
+          "label": "Non applicabile"
+        },
+        {
+          "code": "98",
+          "label": "Non ricorda / Non so"
+        },
+        {
+          "code": "99",
+          "label": "Preferisco non rispondere / Rifiuta"
+        }
+      ],
+      "filter_condition": "Posta a tutti i rispondenti",
+      "comparability": "Fornisce la massima flessibilità analitica per la derivazione automatica di qualsiasi schema di fasce d'età proprietario (es. generazioni Boomer/Gen X/Millennials/Gen Z o classi quinquennali Istat).",
+      "recoding_logic": "eta = anno_rilevazione - anno_nascita; if eta in [18..24] -> 1; elif eta in [25..34] -> 2; elif eta in [35..44] -> 3; elif eta in [45..54] -> 4; elif eta in [55..64] -> 5; elif eta >= 65 -> 6."
+    },
+    {
+      "id_item": "DEM_TITOLO_STUDIO",
+      "construct": "Titolo di studio conseguito (Standard Istat Censimento)",
+      "question_text": "Qual è il titolo di studio più elevato che ha conseguito?",
+      "question_type": "single_choice",
+      "scale_type": "ordinal",
+      "weighting_variable": true,
+      "response_options": [
+        {
+          "code": "1",
+          "label": "Nessun titolo / Licenza elementare"
+        },
+        {
+          "code": "2",
+          "label": "Licenza media inferiore (scuola secondaria di primo grado)"
+        },
+        {
+          "code": "3",
+          "label": "Diploma di maturità / scuola media superiore (scuola secondaria di secondo grado / qualifica professionale)"
+        },
+        {
+          "code": "4",
+          "label": "Laurea triennale / Diploma universitario"
+        },
+        {
+          "code": "5",
+          "label": "Laurea magistrale / specialistica / ciclo unico / vecchio ordinamento"
+        },
+        {
+          "code": "6",
+          "label": "Post-laurea (Master universitario di I o II livello, Dottorato di ricerca, Diploma di specializzazione)"
+        }
+      ],
+      "missing_codes": [
+        {
+          "code": "97",
+          "label": "Non applicabile"
+        },
+        {
+          "code": "98",
+          "label": "Non so"
+        },
+        {
+          "code": "99",
+          "label": "Preferisco non rispondere / Rifiuta"
+        }
+      ],
+      "filter_condition": "Posta a tutti i rispondenti",
+      "comparability": "Classificazione standard Istat armonizzata con la scala europea ISCED (International Standard Classification of Education).",
+      "aggregations": {
+        "3_livelli": {
+          "Basso (fino a licenza media)": ["1", "2"],
+          "Medio (diploma secondario)": ["3"],
+          "Alto (laurea e post-laurea)": ["4", "5", "6"]
+        }
+      }
+    },
+    {
+      "id_item": "DEM_CONDIZIONE_PROFESSIONALE",
+      "construct": "Condizione occupazionale / professionale prevalente (Standard Istat Forze di Lavoro)",
+      "question_text": "Attualmente, qual è la Sua prevalente condizione professionale o lavorativa?",
+      "question_type": "single_choice",
+      "scale_type": "nominal",
+      "weighting_variable": true,
+      "response_options": [
+        {
+          "code": "1",
+          "label": "Imprenditore / Libero professionista"
+        },
+        {
+          "code": "2",
+          "label": "Dirigente / Quadro direttivo"
+        },
+        {
+          "code": "3",
+          "label": "Impiegato / Docente / Funzionario"
+        },
+        {
+          "code": "4",
+          "label": "Operaio / Artigiano / Commesso / Lavoratore manuale esecutivo"
+        },
+        {
+          "code": "5",
+          "label": "Lavoratore autonomo / Commerciante / Coltivatore diretto"
+        },
+        {
+          "code": "6",
+          "label": "Pensionato/a dal lavoro"
+        },
+        {
+          "code": "7",
+          "label": "Studente / Studentessa"
+        },
+        {
+          "code": "8",
+          "label": "Casalinga / Casalingo (dedito/a alla cura della casa o della famiglia)"
+        },
+        {
+          "code": "9",
+          "label": "Disoccupato/a o in cerca di nuova/prima occupazione"
+        },
+        {
+          "code": "10",
+          "label": "Inabile al lavoro / Altra condizione non professionale"
+        }
+      ],
+      "missing_codes": [
+        {
+          "code": "97",
+          "label": "Non applicabile"
+        },
+        {
+          "code": "98",
+          "label": "Non so"
+        },
+        {
+          "code": "99",
+          "label": "Preferisco non rispondere / Rifiuta"
+        }
+      ],
+      "filter_condition": "Posta a tutti i rispondenti",
+      "comparability": "Armonizzato con la Rilevazione Continua delle Forze di Lavoro (RCFL) Istat. Consente l'aggregazione standard tra popolazione attiva (forze di lavoro occupate e in cerca) e popolazione non attiva.",
+      "aggregations": {
+        "status_macro": {
+          "Occupati": ["1", "2", "3", "4", "5"],
+          "Pensionati": ["6"],
+          "Studenti": ["7"],
+          "Casalinghe": ["8"],
+          "In cerca di occupazione": ["9"],
+          "Altri non occupati": ["10"]
+        }
+      }
+    },
+    {
+      "id_item": "DEM_RIPARTIZIONE_GEO",
+      "construct": "Ripartizione geografica macro-regionale di residenza (Istat NUTS-1)",
+      "question_text": "In quale macro-area geografica o regione risiede stabilmente?",
+      "question_type": "single_choice",
+      "scale_type": "nominal",
+      "weighting_variable": true,
+      "response_options": [
+        {
+          "code": "1",
+          "label": "Nord-Ovest (Piemonte, Valle d'Aosta, Liguria, Lombardia)"
+        },
+        {
+          "code": "2",
+          "label": "Nord-Est (Trentino-Alto Adige, Veneto, Friuli-Venezia Giulia, Emilia-Romagna)"
+        },
+        {
+          "code": "3",
+          "label": "Centro (Toscana, Umbria, Marche, Lazio)"
+        },
+        {
+          "code": "4",
+          "label": "Sud (Abruzzo, Molise, Campania, Puglia, Basilicata, Calabria)"
+        },
+        {
+          "code": "5",
+          "label": "Isole (Sicilia, Sardegna)"
+        }
+      ],
+      "missing_codes": [
+        {
+          "code": "97",
+          "label": "Non applicabile"
+        },
+        {
+          "code": "98",
+          "label": "Non so"
+        },
+        {
+          "code": "99",
+          "label": "Preferisco non rispondere / Rifiuta"
+        }
+      ],
+      "filter_condition": "Posta a tutti i rispondenti",
+      "comparability": "Standard geografico Eurostat NUTS-1 e Istat per il campionamento stratificato nazionale.",
+      "aggregations": {
+        "3_macroaree": {
+          "Nord": ["1", "2"],
+          "Centro": ["3"],
+          "Mezzogiorno (Sud e Isole)": ["4", "5"]
+        }
+      }
+    },
+    {
+      "id_item": "DEM_AMPIEZZA_COMUNE",
+      "construct": "Ampiezza demografica del Comune di residenza (Classi Istat)",
+      "question_text": "Qual è la dimensione demografica approssimativa (numero di residenti) del Comune in cui vive?",
+      "question_type": "single_choice",
+      "scale_type": "ordinal",
+      "weighting_variable": true,
+      "response_options": [
+        {
+          "code": "1",
+          "label": "Fino a 5.000 abitanti (Piccoli comuni)"
+        },
+        {
+          "code": "2",
+          "label": "Da 5.001 a 10.000 abitanti"
+        },
+        {
+          "code": "3",
+          "label": "Da 10.001 a 30.000 abitanti"
+        },
+        {
+          "code": "4",
+          "label": "Da 30.001 a 100.000 abitanti"
+        },
+        {
+          "code": "5",
+          "label": "Oltre 100.000 abitanti (Grandi centri e città metropolitane)"
+        }
+      ],
+      "missing_codes": [
+        {
+          "code": "97",
+          "label": "Non applicabile"
+        },
+        {
+          "code": "98",
+          "label": "Non so"
+        },
+        {
+          "code": "99",
+          "label": "Preferisco non rispondere / Rifiuta"
+        }
+      ],
+      "filter_condition": "Posta a tutti i rispondenti",
+      "comparability": "Standard di stratificazione urbana Istat per indagini campionarie su scala nazionale."
+    }
+  ]
+}
