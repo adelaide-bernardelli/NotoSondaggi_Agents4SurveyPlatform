@@ -2,7 +2,9 @@
 ## Piattaforma Multi-Agente Human-in-the-Loop per Indagini Demoscopiche — Noto Sondaggi SRL
 
 > **Documento Operativo di Sviluppo e Guida all'Implementazione Incrementale**  
-> **Istituzione**: Università degli Studi di Pavia / IUSS Pavia  
+> **Documento di Avanzamento e Rendicontazione**  
+> **Istituzione**: IUSS Pavia  
+> **Ph.D Student**: Adelaide Emma Bernardelli  
 > **Supervisione Accademica**: Prof.ssa Alessandra Amendola  
 > **Committente / Partner Industriale**: Noto Sondaggi SRL  
 > **Riferimento di Stato**: `statoprogetto.md` (Versione 3.0 — Censimento dei 35 Task)  
@@ -446,15 +448,7 @@ Il ricercatore sottopone a Noto Sondaggi SRL la seguente checklist operativa:
    - Validazione della tutela delle categorie particolari di dati ex Art. 9 GDPR (orientamenti di voto)
 ```
 
-### 4.2 Materiali da Presentare e Dimostrazione Live durante l'Incontro (20-25 min)
-1. **Minuti 00-10 — Dimostrazione Operativa Live**:
-   - Esecuzione del workflow di revisione ed esportazione del questionario con generazione automatica del file per LimeSurvey (`python scripts/export_limesurvey.py`) e della guida per l'intervistatore.
-2. **Minuti 10-18 — Risoluzione dei 4 Quesiti Tecnici**:
-   - Raccolta delle risposte puntuali alla checklist sopra riportata.
-3. **Minuti 18-25 — Acquisizione Questionari Campione e Chiusura**:
-   - Richiesta di 1 o 2 questionari storici reali di Noto Sondaggi per collaudare l'estrazione con `noto-survey-extractor`.
-
-### 4.3 Criteri di Sblocco per le Successive Milestones
+### 4.2 Criteri di Sblocco per le Successive Milestones
 Lo stop viene rimosso e si passa alla Milestone M9 solo quando:
 - È disponibile il verbale sintetico o riscontro scritto relativo ai 4 quesiti tecnici;
 - Sono stati acquisiti i testi di 1-2 questionari storici di Noto per il test reale;

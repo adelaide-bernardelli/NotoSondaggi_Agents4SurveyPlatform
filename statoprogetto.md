@@ -1,8 +1,9 @@
 # Documento Ufficiale di Avanzamento e Stato del Progetto
 ## Piattaforma Multi-Agente Human-in-the-Loop per Indagini Demoscopiche — Noto Sondaggi SRL
 
-> **Documento Ufficiale di Avanzamento e Rendicontazione per la Supervisione Accademica e Istituzionale**  
-> **Istituzione**: Università degli Studi di Pavia / IUSS Pavia  
+> **Documento di Avanzamento e Rendicontazione**  
+> **Istituzione**: IUSS Pavia  
+> **Ph.D Student**: Adelaide Emma Bernardelli  
 > **Supervisione Accademica**: Prof.ssa Alessandra Amendola  
 > **Committente / Partner Industriale**: Noto Sondaggi SRL  
 > **Versione**: 3.0 (Allineamento Formale e Consolidamento di Stato)  
@@ -13,16 +14,15 @@
 ## 1. Executive Summary per la Supervisione Accademica
 
 ### 1.1 Risultati Raggiunti in Piena Autonomia dal Team Universitario
-Il team di ricerca ha completato e validato l'intera architettura portante del **Modulo A (Progettazione, Revisione Metodologica, Screening Privacy e Consolidamento del Questionario)**. Il sistema è stato ingegnerizzato secondo il principio della **doppia specularità integrale** per operare indistintamente e con parità funzionale su due ambienti AI di riferimento: **Google Antigravity** (`.agents/`, [AGENTS.md](file:///c:/Users/VincenzoOriti/OneDrive%20-%20Universit%C3%A0%20di%20Pavia/Developing/GitHub/NotoSondaggi_Agents4SurveyPlatform/AGENTS.md)) e **Claude Code** (`.claude/`, [CLAUDE.md](file:///c:/Users/VincenzoOriti/OneDrive%20-%20Universit%C3%A0%20di%20Pavia/Developing/GitHub/NotoSondaggi_Agents4SurveyPlatform/CLAUDE.md)).
-
+Il team di ricerca ha completato e validato l'intera architettura portante del **Modulo A (Progettazione, Revisione Metodologica, Screening Privacy e Consolidamento del Questionario)**. Il sistema è stato ingegnerizzato secondo il principio della **doppia specularità integrale** per operare indistintamente e con parità funzionale su due ambienti AI di riferimento: **Google Antigravity** (`.agents/`, [AGENTS.md]) e **Claude Code** (`.claude/`, [CLAUDE.md])
 Nello specifico, sono stati realizzati, testati e verificati:
 1. **Regole Fondamentali di Governance e Deontologia Metodologica**: Perimetro strettamente *human-in-the-loop*, divieto categorico di generare rispondenti sintetici per sostituire dati empirici reali, neutralità scientifica (divieto di profilazione politica o persuasione), tutela rigorosa della tassonomia di non risposta (*unit nonresponse*, *item nonresponse*, rifiuto esplicito `99`, autentico non so `98`, non applicabile `97`, break-off) e salvaguardia della comparabilità delle serie storiche.
 2. **Orchestrazione Multi-Agente con Separazione dei Ruoli**: Main Agent supervisore (`ai-coordinator`) e 3 Subagent specialistici (`questionnaire-agent`, `methodology-agent`, `compliance-agent`), con protocollo di stop obbligatorio e approvazione umana in chat ad ogni singolo gate.
-3. **6 Template Strutturati Obbligatori**: Contratti di output standardizzati ([`templates/status_template.md`](file:///c:/Users/VincenzoOriti/OneDrive%20-%20Universit%C3%A0%20di%20Pavia/Developing/GitHub/NotoSondaggi_Agents4SurveyPlatform/templates/status_template.md), [`templates/brief_template.md`](file:///c:/Users/VincenzoOriti/OneDrive%20-%20Universit%C3%A0%20di%20Pavia/Developing/GitHub/NotoSondaggi_Agents4SurveyPlatform/templates/brief_template.md), [`templates/questionnaire_template.md`](file:///c:/Users/VincenzoOriti/OneDrive%20-%20Universit%C3%A0%20di%20Pavia/Developing/GitHub/NotoSondaggi_Agents4SurveyPlatform/templates/questionnaire_template.md), [`templates/methodology_template.md`](file:///c:/Users/VincenzoOriti/OneDrive%20-%20Universit%C3%A0%20di%20Pavia/Developing/GitHub/NotoSondaggi_Agents4SurveyPlatform/templates/methodology_template.md) con griglia a 11 colonne e schede a 12 campi, [`templates/compliance_template.md`](file:///c:/Users/VincenzoOriti/OneDrive%20-%20Universit%C3%A0%20di%20Pavia/Developing/GitHub/NotoSondaggi_Agents4SurveyPlatform/templates/compliance_template.md), [`templates/final_template.md`](file:///c:/Users/VincenzoOriti/OneDrive%20-%20Universit%C3%A0%20di%20Pavia/Developing/GitHub/NotoSondaggi_Agents4SurveyPlatform/templates/final_template.md)).
+3. **6 Template Strutturati Obbligatori**: Contratti di output standardizzati ([`templates/status_template.md`], [`templates/brief_template.md`], [`templates/questionnaire_template.md`], [`templates/methodology_template.md`] con griglia a 11 colonne e schede a 12 campi, [`templates/compliance_template.md`], [`templates/final_template.md`]).
 4. **Tooling di Verifica Automatica e QA Interno**:
-   - [`scripts/check_mirror_sync.py`](file:///c:/Users/VincenzoOriti/OneDrive%20-%20Universit%C3%A0%20di%20Pavia/Developing/GitHub/NotoSondaggi_Agents4SurveyPlatform/scripts/check_mirror_sync.py): validatore automatico della sincronizzazione speculare tra `.agents/` e `.claude/` (eseguito con successo: 100% allineato);
-   - [`scripts/validate_runs.py`](file:///c:/Users/VincenzoOriti/OneDrive%20-%20Universit%C3%A0%20di%20Pavia/Developing/GitHub/NotoSondaggi_Agents4SurveyPlatform/scripts/validate_runs.py): linter formale per la conformità di qualsiasi caso generato in `runs/<caso>/` rispetto a colonne, campi e codici di non risposta;
-   - [`examples/demo_run_biblioteca/`](file:///c:/Users/VincenzoOriti/OneDrive%20-%20Universit%C3%A0%20di%20Pavia/Developing/GitHub/NotoSondaggi_Agents4SurveyPlatform/examples/demo_run_biblioteca/): caso completo di riferimento end-to-end con tutte le 5 fasi generate e validate.
+   - [`scripts/check_mirror_sync.py`]: validatore automatico della sincronizzazione speculare tra `.agents/` e `.claude/` (eseguito con successo: 100% allineato);
+   - [`scripts/validate_runs.py`]: linter formale per la conformità di qualsiasi caso generato in `runs/<caso>/` rispetto a colonne, campi e codici di non risposta;
+   - [`examples/demo_run_biblioteca/`]: caso completo di riferimento end-to-end con tutte le 5 fasi generate e validate.
 5. **Predisposizione dell'Architettura del Modulo B**: Strutture architetturali e schede di definizione per le fasi post-fieldwork (`analysis-agent`, `reporting-agent`, `dashboard-agent`).
 
 ---

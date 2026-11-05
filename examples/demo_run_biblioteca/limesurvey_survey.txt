@@ -1,0 +1,36 @@
+id	related_id	class	type/scale	name	relevance	text	help	language	validation	mandatory	other	default	same_default
+		S		language		it							
+		S		format		G							
+		S		template		fruity							
+		S		anonymized		N							
+		S		savetimings		Y							
+		S		datestamp		Y							
+		S		ipaddr		N							
+		S		refurl		N							
+		S		active		N							
+		SL		surveyls_title		Questionario Finale Consolidato — demo-biblioteca		it					
+		SL		surveyls_description		Indagine Noto Sondaggi — Caso: demo-biblioteca		it					
+		SL		surveyls_welcometext		Gentile partecipante, la invitiamo a compilare la seguente indagine: Questionario Finale Consolidato — demo-biblioteca.		it					
+		SL		surveyls_endtext		Grazie per aver completato il questionario per Noto Sondaggi.		it					
+1	0	G		G01	1	Domande Principali		it					
+2	0	Q	L	Q1	1	Come valuta complessivamente i servizi offerti dalla biblioteca comunale?		it		Y	N		
+2	2	A	0	1		Molto soddisfacente		it					
+2	2	A	0	2		Abbastanza soddisfacente		it					
+2	2	A	0	3		Poco soddisfacente		it					
+2	2	A	0	4		Per nulla soddisfacente		it					
+2	2	A	0	98		Non so		it					
+2	2	A	0	99		Preferisco non rispondere		it					
+3	0	Q	L	Q2a	1	Quanto è soddisfatto degli orari di apertura della biblioteca?		it		Y	N		
+3	3	A	0	1		Molto soddisfatto		it					
+3	3	A	0	2		Abbastanza soddisfatto		it					
+3	3	A	0	3		Poco soddisfatto		it					
+3	3	A	0	4		Per nulla soddisfatto		it					
+3	3	A	0	98		Non so		it					
+3	3	A	0	99		Preferisco non rispondere		it					
+4	0	Q	L	Q2b	1	Quanto è soddisfatto della disponibilità e scelta dei libri?		it		Y	N		
+4	4	A	0	1		Molto soddisfatto		it					
+4	4	A	0	2		Abbastanza soddisfatto		it					
+4	4	A	0	3		Poco soddisfatto		it					
+4	4	A	0	4		Per nulla soddisfatto		it					
+4	4	A	0	98		Non so		it					
+4	4	A	0	99		Preferisco non rispondere		it					
