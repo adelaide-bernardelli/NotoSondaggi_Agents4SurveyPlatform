@@ -21,7 +21,7 @@ Operi su incarico di `ai-coordinator` (o su invocazione diretta del ricercatore 
 | :--- | :--- | :--- | :--- |
 | **1. `brief`** | `noto-brief-structuring` (`.agents/skills/noto-brief-structuring/SKILL.md` / `.claude/skills/noto-brief-structuring/SKILL.md`) | `templates/brief_template.md` | `runs/<caso>/brief.md` |
 | **2. `questionnaire`** | `noto-questionnaire-drafting` (`.agents/skills/noto-questionnaire-drafting/SKILL.md` / `.claude/skills/noto-questionnaire-drafting/SKILL.md`) | `templates/questionnaire_template.md` | `runs/<caso>/questionnaire.md` |
-| **3. `final`** | `noto-questionnaire-consolidation` (`.agents/skills/noto-questionnaire-consolidation/SKILL.md` / `.claude/skills/noto-questionnaire-consolidation/SKILL.md`) | `templates/final_template.md` | `runs/<caso>/final.md` |
+| **3. `final`** | `noto-questionnaire-consolidation` (`.agents/skills/noto-questionnaire-consolidation/SKILL.md` / `.claude/skills/noto-questionnaire-consolidation/SKILL.md`) | `templates/final_template.md` | `runs/<caso>/final.md`<br>`runs/<caso>/limesurvey_survey.txt` |
 
 ---
 
@@ -57,7 +57,7 @@ Operi su incarico di `ai-coordinator` (o su invocazione diretta del ricercatore 
   - Applica **esclusivamente** le modifiche metodologiche (Opzione A, B o C per ciascun item) e le cautele di compliance espressamente approvate dal ricercatore umano in `runs/<caso>/status.md`. Non accettare né scartare modifiche di tua iniziativa.
   - Compila la tabella di tracciabilità (*Registro delle Modifiche Accettate e Scartate*) mostrando testo precedente, testo consolidato, origine della modifica, motivazione ed effetto sulla serie storica.
   - Specifica in modo completo tutti i filtri/*skip logic*, i codici di non risposta e il promemoria per la validazione empirica sul campo (*pretest / cognitive interview / split ballot*).
-- **Output**: `runs/<caso>/final.md` conforme a `templates/final_template.md`.
+- **Output**: `runs/<caso>/final.md` conforme a `templates/final_template.md` e file di importazione LimeSurvey `runs/<caso>/limesurvey_survey.txt` (TSV a 14 colonne) generato tramite `scripts/export_limesurvey.py`.
 
 ---
 
@@ -74,4 +74,4 @@ Operi su incarico di `ai-coordinator` (o su invocazione diretta del ricercatore 
 - [ ] Ho evitato di inventare target, metodo, numerosità o fatti non presenti nelle fonti, marcando come `[DA VERIFICARE]` ogni riferimento fattuale esterno?
 - [ ] In `questionnaire.md` e `final.md`, ogni item ha codici distinti per *Non so*, *Preferisco non rispondere (Rifiuto)* e *Non applicabile*?
 - [ ] Ho preservato e documentato la comparabilità con eventuali serie storiche senza modificare silenziosamente oggetto, scale o riferimenti temporali?
-- [ ] In `final.md`, ho recepito solo ed esclusivamente le modifiche approvate dal ricercatore in `runs/<caso>/status.md`?
+- [ ] In `final.md`, ho recepito solo ed esclusivamente le modifiche approvate dal ricercatore in `runs/<caso>/status.md` ed ho generato il file di importazione LimeSurvey `runs/<caso>/limesurvey_survey.txt`?

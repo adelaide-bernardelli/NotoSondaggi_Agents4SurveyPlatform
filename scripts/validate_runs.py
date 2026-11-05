@@ -2,7 +2,8 @@
 """
 Linter e validatore formale degli artefatti generati in runs/<caso>/
 Verifica la conformita alle regole metodologiche, alla griglia a 11 colonne,
-alle schede a 12 campi e alla presenza dei codici di non risposta (97, 98, 99).
+alle schede a 12 campi, alla presenza dei codici di non risposta (97, 98, 99)
+e alla struttura del file LimeSurvey TSV (14 colonne standard).
 """
 
 import os
@@ -14,6 +15,7 @@ ROOT_DIR = Path(__file__).resolve().parent.parent
 
 def validate_status_file(path):
     issues = []
+    path = Path(path)
     content = path.read_text(encoding="utf-8")
     
     required_sections = [
@@ -34,6 +36,7 @@ def validate_status_file(path):
 
 def validate_questionnaire_file(path):
     issues = []
+    path = Path(path)
     content = path.read_text(encoding="utf-8")
     
     # Check mandatory non-response codes
@@ -48,6 +51,7 @@ def validate_questionnaire_file(path):
 
 def validate_methodology_file(path):
     issues = []
+    path = Path(path)
     content = path.read_text(encoding="utf-8")
     
     # Check 11 columns in summary table
@@ -73,6 +77,7 @@ def validate_methodology_file(path):
 
 def validate_compliance_file(path):
     issues = []
+    path = Path(path)
     content = path.read_text(encoding="utf-8")
     
     required_keywords = [
@@ -86,6 +91,7 @@ def validate_compliance_file(path):
 
 def validate_final_file(path):
     issues = []
+    path = Path(path)
     content = path.read_text(encoding="utf-8")
     
     if "97" not in content:
@@ -97,7 +103,75 @@ def validate_final_file(path):
         
     return issues
 
+EXPECTED_LIMESURVEY_COLUMNS = [
+    "id",
+    "related_id",
+    "class",
+    "type/scale",
+    "name",
+    "relevance",
+    "text",
+    "help",
+    "language",
+    "validation",
+    "mandatory",
+    "other",
+    "default",
+    "same_default",
+]
+
+VALID_LIMESURVEY_CLASSES = {"S", "SL", "G", "Q", "SQ", "A"}
+REQUIRED_LIMESURVEY_CLASSES = {"S", "SL", "G", "Q"}
+
+def validate_limesurvey_file(path):
+    """Valida la conformita formale del file LimeSurvey TSV a 14 colonne standard."""
+    issues = []
+    path = Path(path)
+    try:
+        content = path.read_text(encoding="utf-8")
+    except Exception as e:
+        return [f"Impossibile leggere il file LimeSurvey TSV: {e}"]
+        
+    lines = content.splitlines()
+    while lines and lines[-1] == "":
+        lines.pop()
+        
+    if not lines:
+        return ["File LimeSurvey TSV vuoto o privo di righe"]
+        
+    header = lines[0].split("\t")
+    if len(header) != 14:
+        issues.append(f"Intestazione non conforme: trovate {len(header)} colonne anziché 14")
+    elif header != EXPECTED_LIMESURVEY_COLUMNS:
+        issues.append(f"Nomi delle colonne di intestazione non conformi allo standard LimeSurvey TSV: {header}")
+        
+    found_classes = set()
+    for idx, line in enumerate(lines[1:], start=2):
+        if not line:
+            issues.append(f"Riga {idx}: riga vuota non ammessa nel file LimeSurvey TSV")
+            continue
+
+        cols = line.split("\t")
+        if len(cols) != 14:
+            issues.append(f"Riga {idx}: trovate {len(cols)} colonne anziché 14 (record '{cols[2] if len(cols) > 2 else 'sconosciuto'}')")
+            continue
+            
+        rec_class = cols[2].strip()
+        if not rec_class:
+            issues.append(f"Riga {idx}: campo 'class' vuoto")
+        elif rec_class not in VALID_LIMESURVEY_CLASSES:
+            issues.append(f"Riga {idx}: classe '{rec_class}' non riconosciuta (classi ammesse: {sorted(VALID_LIMESURVEY_CLASSES)})")
+        else:
+            found_classes.add(rec_class)
+            
+    missing_classes = REQUIRED_LIMESURVEY_CLASSES - found_classes
+    if missing_classes:
+        issues.append(f"Classi strutturali minime mancanti nel tracciato LimeSurvey: {sorted(missing_classes)}")
+        
+    return issues
+
 def validate_case(case_dir):
+    case_dir = Path(case_dir)
     print(f"\n--- Validazione Caso: {case_dir.name} ---")
     case_issues = []
     
@@ -132,6 +206,12 @@ def validate_case(case_dir):
         errs = validate_final_file(f_file)
         if errs:
             case_issues.extend([f"final.md: {e}" for e in errs])
+
+    ls_file = case_dir / "limesurvey_survey.txt"
+    if ls_file.exists():
+        errs = validate_limesurvey_file(ls_file)
+        if errs:
+            case_issues.extend([f"limesurvey_survey.txt: {e}" for e in errs])
             
     if case_issues:
         for err in case_issues:

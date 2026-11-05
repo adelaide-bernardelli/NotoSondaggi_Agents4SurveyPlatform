@@ -1,6 +1,6 @@
 ---
 name: noto-questionnaire-consolidation
-description: Consolida la versione finale del questionario in runs/<caso>/final.md usando templates/final_template.md, integrando esclusivamente le modifiche metodologiche e di compliance approvate dal ricercatore umano in runs/<caso>/status.md.
+description: Consolida la versione finale del questionario in runs/<caso>/final.md usando templates/final_template.md, integrando esclusivamente le modifiche metodologiche e di compliance approvate dal ricercatore umano in runs/<caso>/status.md, ed esporta la struttura TSV per LimeSurvey in runs/<caso>/limesurvey_survey.txt.
 ---
 
 # Skill: `noto-questionnaire-consolidation` — Consolidamento Versione Finale (`final.md`)
@@ -8,7 +8,7 @@ description: Consolida la versione finale del questionario in runs/<caso>/final.
 ## Scopo e Chi la Utilizza
 - **Agente esecutore**: `questionnaire-agent` (su delega di `ai-coordinator` nella fase `final`).
 - **Invocazione diretta**: richiamabile dal ricercatore umano tramite `/noto-questionnaire-consolidation` dopo aver completato e approvato l'audit metodologico e lo screening di compliance.
-- **Template obbligatorio**: `templates/final_template.md` -> `runs/<caso>/final.md`.
+- **Template obbligatorio**: `templates/final_template.md` -> `runs/<caso>/final.md` (con esportazione automatica in `runs/<caso>/limesurvey_survey.txt`).
 
 ---
 
@@ -55,3 +55,16 @@ description: Consolida la versione finale del questionario in runs/<caso>/final.
 - Riepiloga l'albero logico dei filtri (*routing / skip logic*), le regole di rotazione e i controlli di coerenza.
 - Indica il piano di validazione empirica sul campo (*pretest*, *cognitive interview*, *split ballot*) per testare le ipotesi metodologiche e raccordare eventuali serie storiche.
 - Elenca gli eventuali elementi fattuali ancora marcati `[DA VERIFICARE]` e imposta `Esito revisione finale: IN ATTESA`.
+
+### 6. Esportazione Automatica della Struttura LimeSurvey (Fieldwork Bridge)
+- Come post-processo immediato della scrittura di `runs/<caso>/final.md`, esegui lo script CLI di esportazione per generare il tracciato nativo tab-delimited di LimeSurvey a 14 colonne standard:
+  ```bash
+  python scripts/export_limesurvey.py runs/<caso>/final.md --output runs/<caso>/limesurvey_survey.txt
+  ```
+- Verifica che il file generato `runs/<caso>/limesurvey_survey.txt`:
+  1. Contenga esattamente 14 colonne separate da tabulazione per ogni riga (`id`, `related_id`, `class`, `type/scale`, `name`, `relevance`, `text`, `help`, `language`, `validation`, `mandatory`, `other`, `default`, `same_default`);
+  2. Includa i record di intestazione indagine (`S`, `SL`), i gruppi/sezioni (`G`), tutte le domande consolidate (`Q`) e le opzioni di risposta (`A`) o sottodomande (`SQ`);
+  3. Preservi la codifica standard dei codici di non risposta (`97 = Non applicabile`, `98 = Non so`, `99 = Preferisco non rispondere`);
+  4. Abbia tradotto correttamente le logiche di filtro in espressioni di rilevanza LimeSurvey (ExpressionScript).
+- Notifica al coordinatore l'avvenuta creazione dell'artefatto `limesurvey_survey.txt` pronto per la validazione automatica (`scripts/validate_runs.py`) e il caricamento human-in-the-loop.
+
