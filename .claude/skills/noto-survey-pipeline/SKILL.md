@@ -13,7 +13,7 @@ description: Coordina uno studio survey dal brief o questionario esistente fino 
 ---
 
 ## Principi Fondamentali di Orchestrazione
-1. **Separazione netta dei ruoli**: `ai-coordinator` governa il processo e gestisce `runs/<caso>/status.md`, ma **non redige mai in prima persona** `brief.md`, `questionnaire.md`, `methodology.md`, `compliance.md` o `final.md`. Ogni artefatto è delegato allo specialista competente.
+1. **Separazione netta dei ruoli**: `ai-coordinator` governa il processo e gestisce `runs/<caso>/status.md`, ma **non redige mai in prima persona** `brief.md`, `questionnaire.md`, `methodology.md`, `compliance.md`, `final.md` o `extracted_survey.md`. Ogni artefatto è delegato allo specialista competente.
 2. **Approvazione umana in chat (senza script esterni)**: ogni passaggio di fase richiede una decisione esplicita del ricercatore umano in chat (`APPROVATO`, `APPROVATO CON MODIFICHE / SELEZIONE`, `RIFIUTATO / DA REVISIONARE`). Tutte le decisioni vengono registrate da `ai-coordinator` in `runs/<caso>/status.md`.
 3. **Esecuzione a singola fase (Gate-by-Gate)**: viene eseguita una sola fase alla volta; al termine della fase l'orchestratore presenta il riepilogo al ricercatore e **si ferma**.
 

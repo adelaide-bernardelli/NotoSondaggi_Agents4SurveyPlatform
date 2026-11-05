@@ -103,6 +103,47 @@ def validate_final_file(path):
         
     return issues
 
+def validate_extracted_survey_file(path):
+    """Valida la conformita formale di un artefatto di questionario storico estratto."""
+    issues = []
+    path = Path(path)
+    try:
+        content = path.read_text(encoding="utf-8")
+    except Exception as e:
+        return [f"Impossibile leggere il file di estrazione: {e}"]
+        
+    if not content.strip():
+        return ["File di estrazione vuoto o privo di contenuto"]
+
+    required_sections = [
+        "## 1. Metadati dello Studio Estratto",
+        "## 2. Inquadramento Metodologico e Aree Tematiche",
+        "## 3. Inventario Strutturato delle Domande e Batterie Estratte",
+        "## 4. Mappa delle Batterie Standard Identificate",
+        "## 5. Note di Validazione Umana e Revisione",
+    ]
+    for s in required_sections:
+        if s not in content:
+            issues.append(f"Sezione mancante: '{s}'")
+
+    required_meta = [
+        "ID Studio / Nome Archivio:",
+        "Committente originario:",
+        "Popolazione di riferimento e Target:",
+    ]
+    for m in required_meta:
+        if m not in content:
+            issues.append(f"Metadato obbligatorio mancante: '{m}'")
+
+    if "97" not in content or "Non applicabile" not in content:
+        issues.append("Codice 97 (Non applicabile) mancante o non specificato")
+    if "98" not in content or "Non so" not in content:
+        issues.append("Codice 98 (Non so) mancante o non specificato")
+    if "99" not in content or ("Preferisco non rispondere" not in content and "Rifiuto" not in content and "Rifiuta" not in content):
+        issues.append("Codice 99 (Rifiuto / Preferisco non rispondere) mancante o non specificato")
+
+    return issues
+
 EXPECTED_LIMESURVEY_COLUMNS = [
     "id",
     "related_id",
@@ -212,6 +253,12 @@ def validate_case(case_dir):
         errs = validate_limesurvey_file(ls_file)
         if errs:
             case_issues.extend([f"limesurvey_survey.txt: {e}" for e in errs])
+
+    ext_file = case_dir / "extracted_survey.md"
+    if ext_file.exists():
+        errs = validate_extracted_survey_file(ext_file)
+        if errs:
+            case_issues.extend([f"extracted_survey.md: {e}" for e in errs])
             
     if case_issues:
         for err in case_issues:
@@ -233,9 +280,26 @@ def main():
                     p = candidate
                 else:
                     p = (ROOT_DIR / arg).resolve()
-            if not p.exists() or not p.is_dir():
-                print(f"[FAIL] Cartella caso non trovata o non valida: '{arg}'")
+            if not p.exists():
+                print(f"[FAIL] Percorso non trovato o non valido: '{arg}'")
                 sys.exit(1)
+            if p.is_file():
+                if p.name == "limesurvey_survey.txt" or p.suffix == ".txt":
+                    errs = validate_limesurvey_file(p)
+                    tipo = "LimeSurvey TSV"
+                elif "extracted" in p.name:
+                    errs = validate_extracted_survey_file(p)
+                    tipo = "Estrazione Questionario"
+                else:
+                    print(f"[FAIL] Tipo di file non riconosciuto per la validazione diretta: '{arg}'")
+                    sys.exit(1)
+                if errs:
+                    for e in errs:
+                        print(f"  [FAIL] {p.name}: {e}")
+                    sys.exit(1)
+                else:
+                    print(f"  [PASS] {p.name} conforme allo standard ({tipo}).")
+                    sys.exit(0)
             cases_to_check.append(p)
     else:
         runs_dir = ROOT_DIR / "runs"

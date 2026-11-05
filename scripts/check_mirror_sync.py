@@ -78,6 +78,25 @@ def check_skills():
     skills_ant = {d.name for d in agents_skills_dir.iterdir() if d.is_dir()}
     skills_cld = {d.name for d in claude_skills_dir.iterdir() if d.is_dir()}
     
+    expected_skills = [
+        "noto-survey-pipeline",
+        "noto-brief-structuring",
+        "noto-questionnaire-drafting",
+        "noto-methodology-audit",
+        "noto-compliance-check",
+        "noto-questionnaire-consolidation",
+        "noto-survey-extractor",
+    ]
+    missing_ant = set(expected_skills) - skills_ant
+    missing_cld = set(expected_skills) - skills_cld
+    if missing_ant or missing_cld:
+        return False, f"Skill attese mancanti: .agents={missing_ant}, .claude={missing_cld}"
+        
+    unexpected_ant = skills_ant - set(expected_skills)
+    unexpected_cld = skills_cld - set(expected_skills)
+    if unexpected_ant or unexpected_cld:
+        return False, f"Skill non censite o inattese: .agents={unexpected_ant}, .claude={unexpected_cld}"
+        
     if skills_ant != skills_cld:
         return False, f"Disallineamento cartelle skill: {skills_ant ^ skills_cld}"
         
@@ -137,10 +156,15 @@ def check_templates():
         "methodology_template.md",
         "compliance_template.md",
         "final_template.md",
+        "extracted_survey_template.md",
     ]
     missing = [t for t in expected if not (templates_dir / t).exists()]
     if missing:
         return False, f"Template mancanti: {missing}"
+    templates_found = [f.name for f in templates_dir.glob("*.md")]
+    unexpected = set(templates_found) - set(expected)
+    if unexpected:
+        return False, f"Template non previsti in templates/: {unexpected}"
     return True, f"Tutti i {len(expected)} template obbligatori sono presenti"
 
 def main():

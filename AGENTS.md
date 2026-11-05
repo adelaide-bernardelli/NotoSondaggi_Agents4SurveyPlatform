@@ -52,8 +52,8 @@ L'architettura adotta la best practice della **separazione netta tra supervision
 
 | Agente | Ruolo | Responsabilità e Vincoli Operativi | Artefatti gestiti in `runs/<caso>/` |
 | :--- | :--- | :--- | :--- |
-| **`ai-coordinator`** | Supervisore e Orchestratore (Main Agent) | Coordina il flusso, inizializza la cartella del caso e `runs/<caso>/status.md`, delega **una sola fase alla volta** allo specialista competente, verifica la conformità dell'output al template e chiede l'approvazione umana in chat. **Non redige mai direttamente** `brief.md`, `questionnaire.md`, `methodology.md`, `compliance.md` o `final.md`. | `runs/<caso>/status.md` (basato su `templates/status_template.md`) |
-| **`questionnaire-agent`** | Specialista Questionario e Brief (Subagent) | Struttura il brief da input grezzi (`noto-brief-structuring`), redige la bozza del questionario (`noto-questionnaire-drafting`) e consolida la versione finale post-revisioni (`noto-questionnaire-consolidation`). Non valuta autonomamente la compliance legale e non approva le proprie bozze. | `runs/<caso>/brief.md`<br>`runs/<caso>/questionnaire.md`<br>`runs/<caso>/final.md`<br>`runs/<caso>/limesurvey_survey.txt` |
+| **`ai-coordinator`** | Supervisore e Orchestratore (Main Agent) | Coordina il flusso, inizializza la cartella del caso e `runs/<caso>/status.md`, delega **una sola fase alla volta** allo specialista competente, verifica la conformità dell'output al template e chiede l'approvazione umana in chat. **Non redige mai direttamente** `brief.md`, `questionnaire.md`, `methodology.md`, `compliance.md`, `final.md` o `extracted_survey.md`. | `runs/<caso>/status.md` (basato su `templates/status_template.md`) |
+| **`questionnaire-agent`** | Specialista Questionario, Brief ed Estrazione (Subagent) | Struttura il brief da input grezzi (`noto-brief-structuring`), redige la bozza del questionario (`noto-questionnaire-drafting`), consolida la versione finale post-revisioni (`noto-questionnaire-consolidation`) ed estrae formulari e batterie da materiali storici (`noto-survey-extractor`). Non valuta autonomamente la compliance legale e non approva le proprie bozze. | `runs/<caso>/brief.md`<br>`runs/<caso>/questionnaire.md`<br>`runs/<caso>/final.md`<br>`runs/<caso>/limesurvey_survey.txt`<br>`runs/<caso>/extracted_survey.md` |
 | **`methodology-agent`** | Revisore Metodologico (Subagent) | Esegue l'audit metodologico item-per-item (`noto-methodology-audit`), distingue i tipi di non risposta, valuta l'impatto sulle serie storiche e propone le tre alternative (*conservare*, *modifica minima*, *revisione sostanziale*). | `runs/<caso>/methodology.md` |
 | **`compliance-agent`** | Revisore Preliminare Privacy & AI Act (Subagent) | Esegue lo screening preliminare (`noto-compliance-check`) su dati personali, categorie particolari ex Art. 9 GDPR (es. opinioni politiche), informativa, conservazione e profili AI Act, segnalando i punti bloccanti per il DPO/legale. | `runs/<caso>/compliance.md` |
 
@@ -67,7 +67,7 @@ L'architettura adotta la best practice della **separazione netta tra supervision
 
 ---
 
-## 4. Mappa delle 6 Skill
+## 4. Mappa delle 7 Skill
 
 Ogni skill è disponibile sia in `.agents/skills/<nome>/SKILL.md` sia in `.claude/skills/<nome>/SKILL.md` e può essere richiamata dagli agenti o direttamente dal supervisore umano:
 
@@ -77,6 +77,7 @@ Ogni skill è disponibile sia in `.agents/skills/<nome>/SKILL.md` sia in `.claud
 4. **`noto-methodology-audit`**: audit metodologico item-per-item del questionario in `runs/<caso>/methodology.md` usando `templates/methodology_template.md` (e tracciamento comparativo opzionale secondo `examples/confronto_modelli.csv`).
 5. **`noto-compliance-check`**: verifica preliminare privacy (GDPR Art. 9) e governance AI Act in `runs/<caso>/compliance.md` usando `templates/compliance_template.md`.
 6. **`noto-questionnaire-consolidation`**: recepimento delle sole modifiche metodologiche e di compliance approvate dal ricercatore, produzione della versione consolidata `runs/<caso>/final.md` usando `templates/final_template.md` ed esportazione automatica della struttura indagine per LimeSurvey (TSV a 14 colonne standard) in `runs/<caso>/limesurvey_survey.txt` tramite `scripts/export_limesurvey.py`.
+7. **`noto-survey-extractor`**: estrazione e normalizzazione strutturata di formulari, batterie di domande, scale e metadati da questionari e report storici (PDF, DOCX, TXT, MD) secondo `templates/extracted_survey_template.md`, con codifica standard dei codici di non risposta (`97/98/99`) e note di comparabilità per le serie storiche.
 
 ---
 
@@ -92,7 +93,7 @@ I workflow sono definiti specularmente in `.agents/workflows/<nome>.md` e `.clau
 
 ---
 
-## 6. Mappa dei 6 Template Obbligatori e Tracciati Standard
+## 6. Mappa dei 7 Template Obbligatori e Tracciati Standard
 
 Ogni artefatto prodotto nella cartella `runs/<caso>/` deve rispettare fedelmente la struttura del corrispondente template in `templates/`:
 
@@ -104,6 +105,7 @@ Ogni artefatto prodotto nella cartella `runs/<caso>/` deve rispettare fedelmente
 | `templates/methodology_template.md` | `runs/<caso>/methodology.md` | `methodology-agent` | `noto-methodology-audit` | Metodo e limiti, griglia a 11 colonne, schede analitiche a 12 campi con le 3 opzioni (*A: Conservare*, *B: Modifica minima*, *C: Revisione sostanziale*), bozza riformulata, rischi trasversali, piano *pretest/pilot* |
 | `templates/compliance_template.md` | `runs/<caso>/compliance.md` | `compliance-agent` | `noto-compliance-check` | Perimetro dati, tabella di screening domanda-per-domanda (Art. 9 GDPR, identificazione indiretta, *"Preferisco non rispondere"*), checklist GDPR/AI Act, blocchi per DPO/legale |
 | `templates/final_template.md` | `runs/<caso>/final.md`<br>`runs/<caso>/limesurvey_survey.txt` | `questionnaire-agent` | `noto-questionnaire-consolidation` | Metadati di consolidamento, registro modifiche accettate/scartate, prescrizioni compliance recepite, testo definitivo con codici `97/98/99`, mappa filtri, piano validazione empirica ed esportazione TSV LimeSurvey a 14 colonne standard |
+| `templates/extracted_survey_template.md` | `knowledge/extracted_*.md`<br>`runs/<caso>/extracted_survey.md` | `questionnaire-agent` | `noto-survey-extractor` | Metadati studio storico (committente, target, periodo), lista strutturata domande con codice originale, costrutto, formulazione testuale esatta, tipologia domanda, scala/opzioni con codifica standard `97/98/99`, mappa batterie standard e note di comparabilità per serie storiche |
 
 Per il confronto sperimentale tra diversi modelli LLM a parità di caso e di input è inoltre disponibile il tracciato standard `examples/confronto_modelli.csv` (`case_id,ruolo,provider,modello_versione,data_run,prompt_versione,tempo_ricercatore_min,issue_rilevate,issue_verificate,modifiche_accettate,note`). Per il fieldwork bridge verso la piattaforma di rilevazione LimeSurvey (CATI/CAWI) è standardizzato il formato nativo tab-delimited a 14 colonne standard `runs/<caso>/limesurvey_survey.txt`, generato automaticamente tramite `scripts/export_limesurvey.py` al termine del consolidamento.
 
