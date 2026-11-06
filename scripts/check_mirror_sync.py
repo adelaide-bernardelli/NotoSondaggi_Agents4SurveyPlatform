@@ -86,6 +86,7 @@ def check_skills():
         "noto-compliance-check",
         "noto-questionnaire-consolidation",
         "noto-survey-extractor",
+        "noto-agcom-reporting",
     ]
     missing_ant = set(expected_skills) - skills_ant
     missing_cld = set(expected_skills) - skills_cld

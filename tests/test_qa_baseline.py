@@ -20,6 +20,7 @@ from scripts.check_mirror_sync import (
 from scripts.validate_runs import (
     extract_question_blocks,
     has_regia_instructions,
+    validate_agcom_file,
     validate_brief_file,
     validate_case,
     validate_extracted_survey_file,
@@ -43,7 +44,56 @@ class TestQABaseline(unittest.TestCase):
     def test_skills_mirror_sync(self):
         ok, msg = check_skills()
         self.assertTrue(ok, f"Skill non sincronizzate: {msg}")
-        self.assertEqual(msg, "Tutte le 7 skill sono perfettamente identiche")
+        self.assertEqual(msg, "Tutte le 8 skill sono perfettamente identiche")
+
+    def test_noto_agcom_reporting_skill_sync(self):
+        """Verifica che la skill noto-agcom-reporting esista e sia speculare byte-for-byte."""
+        ant_file = ROOT_DIR / ".agents" / "skills" / "noto-agcom-reporting" / "SKILL.md"
+        cld_file = ROOT_DIR / ".claude" / "skills" / "noto-agcom-reporting" / "SKILL.md"
+
+        self.assertTrue(ant_file.exists(), "noto-agcom-reporting SKILL.md mancante in .agents")
+        self.assertTrue(cld_file.exists(), "noto-agcom-reporting SKILL.md mancante in .claude")
+
+        content_ant = ant_file.read_text(encoding="utf-8").replace("\r\n", "\n")
+        content_cld = cld_file.read_text(encoding="utf-8").replace("\r\n", "\n")
+
+        self.assertEqual(content_ant, content_cld, "I due file SKILL.md di noto-agcom-reporting non sono identici")
+        self.assertIn("name: noto-agcom-reporting", content_ant)
+        self.assertIn("templates/agcom_template.md", content_ant)
+        self.assertIn("scripts/generate_agcom_report.py", content_ant)
+        self.assertIn("Delibera AGCOM n. 256/10/CSP", content_ant)
+        self.assertIn("[DA VERIFICARE SUL CAMPO]", content_ant)
+        self.assertIn("97", content_ant)
+        self.assertIn("98", content_ant)
+        self.assertIn("99", content_ant)
+        self.assertIn("www.sondaggipoliticoelettorali.it", content_ant)
+
+    def test_reporting_agent_active_sync(self):
+        """Verifica che reporting-agent sia configurato allo stato attivo e sincronizzato specularmente."""
+        ant_agent = ROOT_DIR / ".agents" / "agents" / "reporting-agent.md"
+        cld_agent = ROOT_DIR / ".claude" / "agents" / "reporting-agent.md"
+
+        self.assertTrue(ant_agent.exists(), "reporting-agent.md mancante in .agents")
+        self.assertTrue(cld_agent.exists(), "reporting-agent.md mancante in .claude")
+
+        content_ant = ant_agent.read_text(encoding="utf-8")
+        content_cld = cld_agent.read_text(encoding="utf-8")
+
+        from scripts.check_mirror_sync import parse_frontmatter
+        _, body_ant = parse_frontmatter(content_ant)
+        _, body_cld = parse_frontmatter(content_cld)
+        body_ant = body_ant.replace("\r\n", "\n")
+        body_cld = body_cld.replace("\r\n", "\n")
+
+        self.assertEqual(body_ant, body_cld, "Il corpo operativo di reporting-agent non è identico tra .agents e .claude")
+        self.assertIn("STATO: ATTIVO", body_ant)
+        self.assertNotIn("STATO: IN ATTESA DI ATTIVAZIONE", body_ant)
+        self.assertIn("noto-agcom-reporting", body_ant)
+        self.assertIn("scheda_agcom.md", body_ant)
+        self.assertIn("Delibera AGCOM", body_ant)
+        self.assertIn("256/10/CSP", body_ant)
+        self.assertIn("[DA VERIFICARE SUL CAMPO]", body_ant)
+        self.assertIn("rispondenti sintetici", body_ant)
 
     def test_workflows_commands_sync(self):
         ok, msg = check_workflows_commands()
@@ -268,6 +318,67 @@ class TestQABaseline(unittest.TestCase):
             self.assertIn("noto-survey-extractor", content)
             self.assertIn("templates/extracted_survey_template.md", content)
             self.assertIn("extracted_survey.md", content)
+
+    def test_ai_coordinator_agcom_reporting_delegation_sync(self):
+        """Verifica che la delega di reporting-agent e noto-agcom-reporting sia censita e sincronizzata in ai-coordinator."""
+        ant_coord = ROOT_DIR / ".agents" / "agents" / "ai-coordinator.md"
+        cld_coord = ROOT_DIR / ".claude" / "agents" / "ai-coordinator.md"
+
+        self.assertTrue(ant_coord.exists(), "ai-coordinator.md mancante in .agents")
+        self.assertTrue(cld_coord.exists(), "ai-coordinator.md mancante in .claude")
+
+        content_ant = ant_coord.read_text(encoding="utf-8")
+        content_cld = cld_coord.read_text(encoding="utf-8")
+
+        for content in [content_ant, content_cld]:
+            self.assertIn("reporting-agent", content)
+            self.assertIn("noto-agcom-reporting", content)
+            self.assertIn("templates/agcom_template.md", content)
+            self.assertIn("scheda_agcom.md", content)
+
+    def test_pipeline_skill_agcom_reporting_prohibition_sync(self):
+        """Verifica che la skill noto-survey-pipeline includa scheda_agcom.md tra i file non redigibili da ai-coordinator."""
+        ant_pipe = ROOT_DIR / ".agents" / "skills" / "noto-survey-pipeline" / "SKILL.md"
+        cld_pipe = ROOT_DIR / ".claude" / "skills" / "noto-survey-pipeline" / "SKILL.md"
+
+        self.assertTrue(ant_pipe.exists(), "noto-survey-pipeline SKILL.md mancante in .agents")
+        self.assertTrue(cld_pipe.exists(), "noto-survey-pipeline SKILL.md mancante in .claude")
+
+        for fpath in [ant_pipe, cld_pipe]:
+            content = fpath.read_text(encoding="utf-8")
+            self.assertIn("scheda_agcom.md", content, f"scheda_agcom.md non menzionata in {fpath}")
+
+    def test_agcom_template_valid(self):
+        """Verifica che templates/agcom_template.md sia conforme a validate_agcom_file."""
+        tpl_path = ROOT_DIR / "templates" / "agcom_template.md"
+        self.assertTrue(tpl_path.exists(), "templates/agcom_template.md mancante")
+        errs = validate_agcom_file(tpl_path)
+        self.assertEqual(errs, [], f"templates/agcom_template.md presenta non conformità: {errs}")
+        # Test polimorfismo str/Path
+        errs_str = validate_agcom_file(str(tpl_path))
+        self.assertEqual(errs_str, [], f"Validazione con percorso stringa fallita: {errs_str}")
+
+    def test_validate_case_with_agcom_report(self):
+        """Verifica che validate_case rilevi e convalidi scheda_agcom.md se presente in una cartella caso."""
+        with tempfile.TemporaryDirectory() as tmpdir:
+            case_dir = Path(tmpdir) / "test_agcom_case"
+            case_dir.mkdir()
+            status_file = case_dir / "status.md"
+            status_file.write_text(
+                "# Status\n## Metadati del Caso\n- ID Caso: agcom-test\n- Fase attiva corrente: FINAL\n"
+                "## Avanzamento delle Fasi\n## Registro delle Decisioni Umane in Chat\n",
+                encoding="utf-8",
+            )
+            # scheda_agcom.md valida da template
+            agcom_file = case_dir / "scheda_agcom.md"
+            valid_content = (ROOT_DIR / "templates" / "agcom_template.md").read_text(encoding="utf-8")
+            agcom_file.write_text(valid_content, encoding="utf-8")
+
+            self.assertTrue(validate_case(case_dir), "Validazione del caso con scheda_agcom valida fallita")
+
+            # Invalida scheda_agcom.md rimuovendo codice 99
+            agcom_file.write_text(valid_content.replace("99", "XX"), encoding="utf-8")
+            self.assertFalse(validate_case(case_dir), "Validazione doveva fallire con scheda_agcom priva di codice 99")
 
     def test_demo_run_brief_valid(self):
         """Verifica che brief.md in demo_run_biblioteca sia presente e conforme a validate_brief_file."""

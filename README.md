@@ -31,7 +31,7 @@ NotoSondaggi_Agents4SurveyPlatform/
 │   │   ├── methodology-agent.md                   # Revisore metodologico item-per-item (Modulo A)
 │   │   ├── compliance-agent.md                    # Revisore preliminare GDPR Art. 9 / AI Act (Modulo A)
 │   │   ├── analysis-agent.md                      # [In attesa di attivazione - Modulo B]
-│   │   ├── reporting-agent.md                     # [In attesa di attivazione - Modulo B]
+│   │   ├── reporting-agent.md                     # [Attivo per Scheda AGCOM e Reporting Descrittivo]
 │   │   └── dashboard-agent.md                     # [In attesa di attivazione - Modulo B]
 │   ├── skills/
 │   │   ├── noto-survey-pipeline/SKILL.md          # Orchestrazione del caso e gestione runs/<caso>/status.md
@@ -39,14 +39,16 @@ NotoSondaggi_Agents4SurveyPlatform/
 │   │   ├── noto-questionnaire-drafting/SKILL.md   # Stesura runs/<caso>/questionnaire.md
 │   │   ├── noto-methodology-audit/SKILL.md        # Audit runs/<caso>/methodology.md
 │   │   ├── noto-compliance-check/SKILL.md         # Screening runs/<caso>/compliance.md
-│   │   └── noto-questionnaire-consolidation/SKILL.md # Consolidamento runs/<caso>/final.md
+│   │   ├── noto-questionnaire-consolidation/SKILL.md # Consolidamento runs/<caso>/final.md
+│   │   ├── noto-survey-extractor/SKILL.md         # Estrazione questionari e report storici
+│   │   └── noto-agcom-reporting/SKILL.md          # Scheda Informativa AGCOM (Delibera 256/10/CSP)
 │   └── workflows/
 │       ├── nuova-indagine.md                      # Percorso completo: brief -> questionnaire -> methodology -> compliance -> final
 │       ├── revisione-questionario.md              # Revisione: methodology -> compliance -> final
 │       └── audit-singolo.md                       # Esecuzione mirata di methodology oppure compliance
 ├── .claude/                                       # Architettura Claude Code (speculare a .agents/)
 │   ├── agents/*.md                                # 7 Agenti con frontmatter Claude Code
-│   ├── skills/*/SKILL.md                          # 7 Skill speculari
+│   ├── skills/*/SKILL.md                          # 8 Skill speculari
 │   └── commands/*.md                              # 3 Comandi slash (/nuova-indagine, /revisione-questionario, /audit-singolo)
 ├── templates/                                     # Template obbligatori per tutti gli artefatti
 │   ├── status_template.md                         # Modello per runs/<caso>/status.md
@@ -55,7 +57,8 @@ NotoSondaggi_Agents4SurveyPlatform/
 │   ├── methodology_template.md                    # Modello per runs/<caso>/methodology.md
 │   ├── compliance_template.md                     # Modello per runs/<caso>/compliance.md
 │   ├── final_template.md                          # Modello per runs/<caso>/final.md
-│   └── extracted_survey_template.md               # Modello per archiviazione questionari estratti
+│   ├── extracted_survey_template.md               # Modello per archiviazione questionari estratti
+│   └── agcom_template.md                          # Modello per runs/<caso>/scheda_agcom.md (Delibera AGCOM 256/10/CSP)
 ├── examples/                                      # Materiali fittizi per test e confronto modelli
 │   ├── brief_demo.md
 │   ├── questionario_demo.md
@@ -81,10 +84,10 @@ Ogni agente dispone di istruzioni operative strutturate (Identità, Riferimenti 
 | **`methodology-agent`** | `.agents/agents/methodology-agent.md` | `.claude/agents/methodology-agent.md` | Esegue l'audit metodologico item-per-item in `runs/<caso>/methodology.md` con griglia a 11 colonne e schede analitiche a 12 campi (con le 3 opzioni: *A: Conservare*, *B: Modifica minima*, *C: Revisione sostanziale*). |
 | **`compliance-agent`** | `.agents/agents/compliance-agent.md` | `.claude/agents/compliance-agent.md` | Esegue lo screening preliminare GDPR (Art. 9) e AI Act in `runs/<caso>/compliance.md`, segnalando i punti bloccanti per DPO/consulente legale. |
 | **`analysis-agent`** | `.agents/agents/analysis-agent.md` | `.claude/agents/analysis-agent.md` | *Scheda strutturata — In attesa di attivazione (Modulo B)*: verifica dati raccolti, pesatura e analisi descrittive riproducibili su piano statistico approvato. |
-| **`reporting-agent`** | `.agents/agents/reporting-agent.md` | `.claude/agents/reporting-agent.md` | *Scheda strutturata — In attesa di attivazione (Modulo B)*: stesura di resoconti descrittivi e verificabili a partire esclusivamente da tavole statistiche validate. |
+| **`reporting-agent`** | `.agents/agents/reporting-agent.md` | `.claude/agents/reporting-agent.md` | **Attivo (Reporting Regolamentare e Scheda AGCOM)**: redige e convalida la Scheda Informativa obbligatoria del sondaggio ex art. 5 Delibera AGCOM 256/10/CSP (`noto-agcom-reporting`) in `runs/<caso>/scheda_agcom.md`, calcola il margine d'errore teorico al 95% e assicura la marcatura di `[DA VERIFICARE SUL CAMPO]`. |
 | **`dashboard-agent`** | `.agents/agents/dashboard-agent.md` | `.claude/agents/dashboard-agent.md` | *Scheda strutturata — In attesa di attivazione (Modulo B)*: progettazione di specifiche grafiche e layout descrittivi con metadati completi, senza pubblicazione autonoma. |
 
-### 3.2 Le 7 Skill Speculari (`.agents/skills/` e `.claude/skills/`)
+### 3.2 Le 8 Skill Speculari (`.agents/skills/` e `.claude/skills/`)
 Richiamabili sia dagli agenti durante un workflow sia direttamente dal supervisore umano:
 
 | Skill | Google Antigravity | Claude Code | Agente Associato | Funzione Operativa |
@@ -96,6 +99,7 @@ Richiamabili sia dagli agenti durante un workflow sia direttamente dal superviso
 | **`noto-compliance-check`** | `.agents/skills/noto-compliance-check/SKILL.md` | `.claude/skills/noto-compliance-check/SKILL.md` | `compliance-agent` | Screening preliminare privacy (GDPR Art. 9) e governance AI Act in `runs/<caso>/compliance.md`. |
 | **`noto-questionnaire-consolidation`** | `.agents/skills/noto-questionnaire-consolidation/SKILL.md` | `.claude/skills/noto-questionnaire-consolidation/SKILL.md` | `questionnaire-agent` | Recepimento delle sole modifiche approvate dal ricercatore in `runs/<caso>/status.md` e consolidamento di `runs/<caso>/final.md`. |
 | **`noto-survey-extractor`** | `.agents/skills/noto-survey-extractor/SKILL.md` | `.claude/skills/noto-survey-extractor/SKILL.md` | `questionnaire-agent` | Estrazione e normalizzazione strutturata di formulari, batterie e scale da materiali storici (PDF/DOCX/TXT/MD) in `templates/extracted_survey_template.md`. |
+| **`noto-agcom-reporting`** | `.agents/skills/noto-agcom-reporting/SKILL.md` | `.claude/skills/noto-agcom-reporting/SKILL.md` | `reporting-agent` | Generazione e convalida della Scheda Informativa obbligatoria del sondaggio ex art. 5 Delibera AGCOM 256/10/CSP in `runs/<caso>/scheda_agcom.md` tramite `scripts/generate_agcom_report.py`. |
 
 ### 3.3 I 3 Workflow / Comandi Speculari (`.agents/workflows/` e `.claude/commands/`)
 Percorsi guidati multi-fase invocabili tramite comando `/` dal supervisore umano o eseguiti da `ai-coordinator`:
@@ -106,7 +110,7 @@ Percorsi guidati multi-fase invocabili tramite comando `/` dal supervisore umano
 | **`/revisione-questionario`** | `.agents/workflows/revisione-questionario.md` | `.claude/commands/revisione-questionario.md` | `methodology -> compliance -> final` | Audit e consolidamento di un questionario già redatto o storico copiato in `runs/<caso>/source/`. |
 | **`/audit-singolo`** | `.agents/workflows/audit-singolo.md` | `.claude/commands/audit-singolo.md` | `methodology` *oppure* `compliance` | Esecuzione rapida e mirata del solo audit metodologico o del solo screening di conformità su un documento. |
 
-### 3.4 I 7 Template Obbligatori (`templates/`)
+### 3.4 Gli 8 Template Obbligatori (`templates/`)
 Ogni artefatto generato nella cartella `runs/<caso>/` o nella base di conoscenza deve seguire fedelmente la struttura del relativo template:
 
 | Template | Artefatto Target in `runs/<caso>/` | Agente Responsabile | Skill Associata | Contenuto Strutturale Principale |
@@ -118,6 +122,7 @@ Ogni artefatto generato nella cartella `runs/<caso>/` o nella base di conoscenza
 | `templates/compliance_template.md` | `runs/<caso>/compliance.md` | `compliance-agent` | `noto-compliance-check` | Perimetro dati, griglia di screening domanda-per-domanda (Art. 9 GDPR, identificazione indiretta, *"Preferisco non rispondere"*), checklist GDPR/AI Act, blocchi per DPO/legale. |
 | `templates/final_template.md` | `runs/<caso>/final.md`<br>`runs/<caso>/limesurvey_survey.txt` | `questionnaire-agent` | `noto-questionnaire-consolidation` | Metadati di consolidamento, registro modifiche accettate/scartate, prescrizioni compliance recepite, testo definitivo con codici `97/98/99`, mappa filtri, piano validazione empirica ed export LimeSurvey. |
 | `templates/extracted_survey_template.md` | `knowledge/extracted_*.md`<br>`runs/<caso>/extracted_survey.md` | `questionnaire-agent` | `noto-survey-extractor` | Metadati studio storico (committente, target, periodo), domande con codice originale, costrutti, opzioni e codici `97/98/99`, batterie standard e note comparabilità. |
+| `templates/agcom_template.md` | `runs/<caso>/scheda_agcom.md` | `reporting-agent` | `noto-agcom-reporting` | Scheda informativa obbligatoria ex art. 5 Delibera AGCOM 256/10/CSP: soggetto realizzatore, committente, popolazione, campione e tassi con `[DA VERIFICARE SUL CAMPO]`, margine d'errore 95%, testo integrale quesiti con codici `97/98/99`, deposito www.sondaggipoliticoelettorali.it. |
 
 ---
 
@@ -146,13 +151,14 @@ Sequenza: `methodology -> compliance -> final`
 3. Rispondi in chat indicando per ogni domanda (`Q1`-`Q5`) quale alternativa approvi (*Opzione A: Conservare*, *Opzione B: Modifica minima*, *Opzione C: Revisione sostanziale*), quindi prosegui con `compliance` e `final`.
 
 ### Scenario C — Eseguire un Audit Singolo o Invocare una Singola Skill (`audit-singolo`)
-Puoi anche richiedere un controllo puntuale usando `/audit-singolo` oppure invocando direttamente una delle 7 skill:
+Puoi anche richiedere un controllo puntuale usando `/audit-singolo` oppure invocando direttamente una delle 8 skill:
 - `/noto-brief-structuring` — per strutturare solo un brief;
 - `/noto-questionnaire-drafting` — per redigere solo una bozza di questionario;
 - `/noto-methodology-audit` — per eseguire solo l'audit metodologico;
 - `/noto-compliance-check` — per eseguire solo lo screening preliminare GDPR Art. 9 / AI Act;
 - `/noto-questionnaire-consolidation` — per consolidare la versione finale ed esportare per LimeSurvey;
 - `/noto-survey-extractor` — per estrarre e strutturare formulari storici e batterie da documenti pregressi;
+- `/noto-agcom-reporting` — per redigere o convalidare la Scheda Informativa AGCOM (Delibera 256/10/CSP);
 - `/noto-survey-pipeline` — per orchestrare e verificare lo stato in `runs/<caso>/status.md`.
 
 ---
