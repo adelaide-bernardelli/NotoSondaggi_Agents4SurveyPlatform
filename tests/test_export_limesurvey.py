@@ -63,6 +63,11 @@ class TestExportLimeSurvey(unittest.TestCase):
                         q_names_found.append(name)
                         self.assertEqual(r_type, "L", "Il questionario demo usa domande a lista radio (L)")
                         self.assertEqual(mand, "Y", "Le domande a scelta devono essere obbligatorie")
+                        self.assertEqual(
+                            help_t,
+                            "[LEGGERE LE OPZIONI — RISPOSTA SINGOLA]",
+                            f"La colonna help della domanda {name} deve contenere le note di regia",
+                        )
                     elif r_class == "A":
                         a_codes_found.add(name)
                         self.assertIn(
@@ -392,6 +397,42 @@ Q01. Domanda singola?
             empty_file = Path(tmpdir) / "empty.md"
             empty_file.write_text("# Documento senza domande\nTesto generico.", encoding="utf-8")
             self.assertFalse(export_to_limesurvey_tsv(empty_file, out_path))
+
+    def test_regia_help_text_export_and_attribute_isolation(self):
+        """Verifica che le note di regia M6 siano correttamente estratte nella colonna help e non inquinate da altri attributi."""
+        md = """# Test Survey
+## 1. Metadati di Consolidamento
+- Caso: test-regia
+
+## 4. Testo Definitivo del Questionario Candidato
+### Sezione 1
+#### Q01 — Costrutto di test
+- **Testo per il rispondente**: Domanda di test con attributi multipli?
+- **Tipo di domanda**: Chiusa singola
+- **Istruzioni di regia e somministrazione**: [NON LEGGERE / SPONTANEA / ROTAZIONE / PROBING]
+- **Fonte/precedente**: Serie storica 2024 [DA VERIFICARE]
+- **Rischio comparabilita**: Basso
+- **Opzioni e codici di risposta**:
+  - 1 = Opzione A
+  - 2 = Opzione B
+- **Codici distinti di uscita**:
+  - `98` = Non so
+  - `99` = Preferisco non rispondere
+"""
+        survey = parse_questionnaire_markdown(md)
+        self.assertEqual(len(survey.groups), 1)
+        self.assertEqual(len(survey.groups[0].questions), 1)
+        q = survey.groups[0].questions[0]
+        self.assertEqual(q.name, "Q01")
+        self.assertEqual(q.help_text, "[NON LEGGERE / SPONTANEA / ROTAZIONE / PROBING]")
+        self.assertNotIn("Fonte/precedente", q.help_text)
+        self.assertNotIn("Rischio comparabilita", q.help_text)
+
+        # Verifica esportazione TSV a 14 colonne
+        rows = generate_tsv_records(survey)
+        q_row = [r for r in rows if len(r) == 14 and r[2] == "Q"][0]
+        # Colonna help è all'indice 7
+        self.assertEqual(q_row[7], "[NON LEGGERE / SPONTANEA / ROTAZIONE / PROBING]")
 
 
 if __name__ == "__main__":

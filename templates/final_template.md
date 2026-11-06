@@ -47,7 +47,7 @@
   - `98` = Non so / Non conosce / Non ha un'opinione
   - `99` = Preferisco non rispondere / Rifiuta
 - **Regola di filtro / skip**:
-- **Istruzioni per intervistatore / programmazione CATI-CAWI-CAPI**:
+- **Istruzioni di regia e somministrazione**: [NON LEGGERE / SPONTANEA / ROTAZIONE / PROBING]
 - **Nota sulla comparabilita storica**:
 
 ---

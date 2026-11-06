@@ -34,7 +34,7 @@ description: Redige la bozza strutturata del questionario in runs/<caso>/questio
      - assegna sempre codici separati (es. `97 = Non applicabile`, `98 = Non so / Non conosce`, `99 = Preferisco non rispondere / Rifiuta`);
      - non fondere mai il *"Non so"* con il *"Rifiuto"*.
    - **Filtro / skip**: specifica a chi va posta la domanda (es. *"A tutti"* oppure *"Solo se Q02 = 1 o 2; altrimenti salta a Q05 e codifica 97"*).
-   - **Nota per intervistatore**: indica le istruzioni operative (es. *"[RUOTARE OPZIONI 1-5]"*, *"[NON LEGGERE 'Non so' / 'Preferisco non rispondere', registrare se spontaneo]"* in CATI, oppure visibilità esplicita in CAWI secondo disegno).
+   - **Istruzioni di regia e somministrazione**: definisci in modo esplicito le istruzioni operative per l'intervistatore o per la piattaforma di rilevazione, adottando la sintassi standardizzata obbligatoria: `- **Istruzioni di regia e somministrazione**: [NON LEGGERE / SPONTANEA / ROTAZIONE / PROBING]`. Specifica prescrizioni puntuali quali *"[NON LEGGERE LE OPZIONI — ATTENDERE RISPOSTA SPONTANEA]"*, *"[LEGGERE LE OPZIONI DI SEGUITO]"*, *"[RUOTARE L'ORDINE DELLE OPZIONI]"*, *"[PROBING NEUTRALE: SE INCERTO CHIARIRE SENZA ORIENTARE]"*, *"[NON SOLLECITARE 'Non so' / 'Preferisco non rispondere', registrare solo se spontaneo]"* in somministrazioni CATI/CAPI, oppure regole di visualizzazione/randomizzazione a schermo in indagini CAWI.
    - **Fonte/precedente e Rischio comparabilità**: indica se l'item proviene da una serie storica (preservandone testo, scala e riferimento temporale) oppure se è `[NUOVO ITEM]`. Segnala con `[DA VERIFICARE]` ogni dato fattuale citato nelle premesse.
 4. **Punti Aperti per il Ricercatore**:
    - Se per un costrutto esistono due formulazioni alternative meritevoli di valutazione (es. scala a 4 passi vs scala a 5 passi con punto neutro), presentale nella sezione *"Punti aperti per il ricercatore"*.
@@ -46,4 +46,5 @@ description: Redige la bozza strutturata del questionario in runs/<caso>/questio
 ## Controlli di Qualità Obbligatori
 - Ogni item di `runs/<caso>/questionnaire.md` è mappato su un obiettivo del brief approvato.
 - Tutte le domande dispongono di codici distinti per *Non so*, *Rifiuto* e *Non applicabile*.
+- Tutte le domande includono la voce standardizzata per le istruzioni di regia e somministrazione (`- **Istruzioni di regia e somministrazione**: [NON LEGGERE / SPONTANEA / ROTAZIONE / PROBING]`).
 - Le scale sono bilanciate e prive di formulazioni *leading* o *double-barreled*.

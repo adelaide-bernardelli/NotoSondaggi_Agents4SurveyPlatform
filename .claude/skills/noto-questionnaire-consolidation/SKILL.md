@@ -48,7 +48,7 @@ description: Consolida la versione finale del questionario in runs/<caso>/final.
   - tipo di domanda, opzioni e codici definitivi;
   - codici distinti per `97 = Non applicabile`, `98 = Non so`, `99 = Preferisco non rispondere`;
   - regola esatta di filtro / *skip*;
-  - istruzioni per intervistatore / programmazione CATI-CAWI-CAPI;
+  - istruzioni di regia e somministrazione conformi alla sintassi standardizzata (`- **Istruzioni di regia e somministrazione**: [NON LEGGERE / SPONTANEA / ROTAZIONE / PROBING]`, con tolleranza difensiva per note di programmazione CATI-CAWI-CAPI);
   - nota sulla comparabilità storica.
 
 ### 5. Specifiche dei Filtri e Piano di Validazione Empirica (Sezioni 5, 6 e 7 del Template)

@@ -34,6 +34,7 @@ Esamina ogni singola domanda e l'intero flusso del questionario verificando:
    - **Abbandono** (*break-off*).
 7. **Percorsi di filtro (*skip logic*) e *subgroup accessibility***: verifica che le domande di valutazione specifica siano precedute da un filtro di conoscenza o fruizione.
 8. **Effetti di sequenza, *priming* e durata delle batterie**: rischio di *response set* / *straightlining* e fatica cognitiva.
+9. **Istruzioni di regia e somministrazione**: verifica che per ciascun item siano definite istruzioni operative di regia chiare e univoche (`[NON LEGGERE / SPONTANEA / ROTAZIONE / PROBING]`), distinguendo se le modalità vadano lette ad alta voce o lasciate alla risposta spontanea, se sia necessaria la rotazione casuale per prevenire distorsioni d'ordine (*priming* / *recency*), le modalità di *probing* neutrale e la gestione delle opzioni di non risposta in CATI/CAPI/CAWI.
 
 > **Regola metodologica aurea**: non eliminare mai l'opzione *"Non so"* o *"Preferisco non rispondere"* per abbassarne artificialmente la frequenza. Una percentuale più bassa di non risposta ottenuta forzando il rispondente non equivale a maggiore validità e genera *pseudo-opinioni*. Ogni effetto atteso deve essere presentato come **ipotesi da testare** empiricamente, mai come certezza.
 
@@ -60,8 +61,8 @@ Per ciascun item (`Q01`, `Q02`, ...), redigi una scheda contenente esattamente q
 - **Severita qualitativa**: `[Bassa / Media / Alta / Critica]`
 - **Alternative di intervento** (presentare sempre tutte e tre quando opportuno):
   1. **Opzione A — Conservare l'originale**: testo invariato e condizioni in cui è preferibile mantenerlo (es. continuità di serie storica).
-  2. **Opzione B — Modifica minima**: intervento conservativo con differenze puntuali rispetto all'originale e completamento di opzioni/codici (`Non so`, `Rifiuto`, `Non applicabile`) e filtri.
-  3. **Opzione C — Revisione sostanziale**: riscrittura strutturale (es. sdoppiamento di domanda *double-barreled*, introduzione di filtro preliminare, rifacimento scala) con differenze puntuali rispetto all'originale.
+  2. **Opzione B — Modifica minima**: intervento conservativo con differenze puntuali rispetto all'originale, completamento di opzioni/codici (`Non so`, `Rifiuto`, `Non applicabile`), filtri e istruzioni standardizzate di regia e somministrazione (`- **Istruzioni di regia e somministrazione**: [NON LEGGERE / SPONTANEA / ROTAZIONE / PROBING]`).
+  3. **Opzione C — Revisione sostanziale**: riscrittura strutturale (es. sdoppiamento di domanda *double-barreled*, introduzione di filtro preliminare, rifacimento scala, integrazione regia puntuale) con differenze puntuali rispetto all'originale.
 - **Effetto atteso** (formulato rigorosamente come *ipotesi da testare*, non certezza)
 - **Costo in durata / respondent burden**
 - **Impatto sulla comparabilita storica**

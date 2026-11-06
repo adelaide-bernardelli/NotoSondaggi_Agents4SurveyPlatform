@@ -386,14 +386,15 @@ def parse_questionnaire_markdown(content: str, default_lang: str = "it") -> Surv
 
         # B. Rilevazione di una Domanda Strutturata (#### Q01 ..., ### D01 ..., #### P01 ...)
         m_q_struct = re.match(
-            r'^(?:#{3,4})\s+(?:Domanda\s+)?([QDP]\d+[a-zA-Z0-9_]*)(?:\s*[-–—:.]\s*(.*))?$',
+            r'^(?:#{2,4})\s+(?:\*\*)?(?:(?:Domanda\s+)([QDP]?\d+[a-zA-Z0-9_]*)|([QDP]\d+[a-zA-Z0-9_]*))(?:\*\*)?(?:\s*[-–—:.]\s*(.*))?$',
             stripped,
             re.IGNORECASE,
         )
         if m_q_struct:
             grp = ensure_group()
-            q_code = m_q_struct.group(1).strip()
-            q_label = m_q_struct.group(2).strip() if m_q_struct.group(2) else ""
+            raw_q_code = (m_q_struct.group(1) or m_q_struct.group(2)).strip()
+            q_code = f"Q{raw_q_code}" if raw_q_code.isdigit() else raw_q_code
+            q_label = (m_q_struct.group(3) or "").strip()
             clean_label = re.sub(r'^\s*\[.*?\]\s*', '', q_label).strip()
             initial_text = clean_markdown_text(clean_label if clean_label else q_label)
             current_question = Question(name=q_code, text=initial_text)
@@ -403,14 +404,15 @@ def parse_questionnaire_markdown(content: str, default_lang: str = "it") -> Surv
 
         # C. Rilevazione di una Domanda Lineare (es. Q1. Come valuta..., D2a: ...)
         m_q_linear = re.match(
-            r'^\s*(?:Domanda\s+)?([QDP]\d+[a-zA-Z0-9_]*)[.:\-–—]\s+(.+)$',
+            r'^\s*(?:\*\*)?(?:(?:Domanda\s+)([QDP]?\d+[a-zA-Z0-9_]*)|([QDP]\d+[a-zA-Z0-9_]*))(?:\*\*)?(?:[.:\-–—]\s*(?:\*\*)?|(?:\*\*)?[.:\-–—])\s+(.+)$',
             stripped,
             re.IGNORECASE,
         )
-        if m_q_linear and not stripped.startswith(("-", "*")):
+        if m_q_linear and not re.match(r"^[-*]\s", stripped):
             grp = ensure_group()
-            q_code = m_q_linear.group(1).strip()
-            q_text = clean_markdown_text(m_q_linear.group(2))
+            raw_q_code = (m_q_linear.group(1) or m_q_linear.group(2)).strip()
+            q_code = f"Q{raw_q_code}" if raw_q_code.isdigit() else raw_q_code
+            q_text = clean_markdown_text(m_q_linear.group(3))
             current_question = Question(name=q_code, text=q_text, q_type="L")
             grp.questions.append(current_question)
             current_section_mode = "options"
@@ -471,7 +473,7 @@ def parse_questionnaire_markdown(content: str, default_lang: str = "it") -> Surv
 
             # Istruzioni per intervistatore / help text
             m_help = re.match(
-                r'^[-*]\s*(?:\*\*)?(?:Istruzioni per (?:l\')?intervistatore.*|Nota per (?:l\')?intervistatore.*)(?:\*\*)?:?\s*(.*)$',
+                r'^[-*]\s*(?:\*\*)?(?:Istruzioni(?:\s+di\s+regia(?:\s+e\s+somministrazione)?|\s+per\s+(?:l[\'’])?intervistatore|\s+di\s+somministrazione|\s+generali|\s+intervistatore)?|Not[ae]\s+(?:di\s+regia|per\s+(?:l[\'’])?intervistatore|intervistatore))[^*:]*(?:\*\*)?:?\s*(.*)$',
                 stripped,
                 re.IGNORECASE,
             )
@@ -543,10 +545,13 @@ def parse_questionnaire_markdown(content: str, default_lang: str = "it") -> Surv
 
             # Bullet aggiuntivo per istruzioni intervistatore multi-linea
             if current_section_mode == "help" and stripped.startswith(("-", "*")):
-                help_line = clean_markdown_text(re.sub(r'^[-*]\s*', '', stripped))
-                if help_line:
-                    current_question.help_text = (current_question.help_text + " " + help_line).strip()
-                continue
+                if re.match(r"^[-*]\s*(?:\*\*)?[A-Za-z0-9_À-ÿ\s/'-]+(?:\*\*)?:", stripped):
+                    current_section_mode = None
+                else:
+                    help_line = clean_markdown_text(re.sub(r'^[-*]\s*', '', stripped))
+                    if help_line:
+                        current_question.help_text = (current_question.help_text + " " + help_line).strip()
+                    continue
 
             # Opzione non numerata sotto sezione opzioni/uscite (auto-assegnazione codice)
             if current_section_mode in ["options", "exit_codes"] and stripped.startswith(("-", "*")):

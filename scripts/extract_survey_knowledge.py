@@ -691,12 +691,12 @@ def parse_single_question_chunk(header_line: str, chunk: str, fallback_number: i
 
         # Istruzioni / Note di regia
         if re.search(
-            r"(?:Istruzioni(?:\s+generali|\s+intervistatore)?|Not[ae]\s+(?:di\s+regia|intervistatore|per\s+intervistatore))\s*:\s*(.*)",
+            r"(?:Istruzioni(?:\s+di\s+regia(?:\s+e\s+somministrazione)?|\s+generali|\s+intervistatore|\s+per\s+(?:l['’])?intervistatore)?|Not[ae]\s+(?:di\s+regia|intervistatore|per\s+intervistatore))[^*:]*(?:\*\*)?:\s*(.*)",
             line_s,
             re.IGNORECASE,
         ):
             m = re.search(
-                r"(?:Istruzioni(?:\s+generali|\s+intervistatore)?|Not[ae]\s+(?:di\s+regia|intervistatore|per\s+intervistatore))\s*:\s*(.*)",
+                r"(?:Istruzioni(?:\s+di\s+regia(?:\s+e\s+somministrazione)?|\s+generali|\s+intervistatore|\s+per\s+(?:l['’])?intervistatore)?|Not[ae]\s+(?:di\s+regia|intervistatore|per\s+intervistatore))[^*:]*(?:\*\*)?:\s*(.*)",
                 line_s,
                 re.IGNORECASE,
             )
@@ -865,10 +865,14 @@ def parse_single_linear_question(orig_code: str, chunk: str, fallback_number: in
         if not line_s:
             continue
 
-        # Riconoscimento note di regia e filtri inline
-        regia_match = re.search(r"\[(?:REGIA|ISTRUZIONI)\s*:\s*([^\]]+)\]", line_s, re.IGNORECASE)
+        # Riconoscimento note di regia e filtri (inline o bullet)
+        regia_match = re.search(
+            r"\[(?:REGIA|ISTRUZIONI)\s*:\s*([^\]]+)\]|^[-*]\s*(?:\*\*)?(?:Istruzioni(?:\s+di\s+regia(?:\s+e\s+somministrazione)?|\s+per\s+(?:l['’])?intervistatore|\s+intervistatore)?|Not[ae]\s+(?:di\s+regia|per\s+(?:l['’])?intervistatore|intervistatore))[^*:]*(?:\*\*)?:?\s*(.*)",
+            line_s,
+            re.IGNORECASE,
+        )
         if regia_match:
-            interviewer_notes = regia_match.group(1).strip()
+            interviewer_notes = _clean_text(regia_match.group(1) or regia_match.group(2))
             continue
 
         filtro_match = re.search(r"\[FILTRO\s*:\s*([^\]]+)\]", line_s, re.IGNORECASE)

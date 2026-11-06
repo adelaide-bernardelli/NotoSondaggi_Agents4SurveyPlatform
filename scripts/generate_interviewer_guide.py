@@ -300,13 +300,14 @@ def parse_questionnaire(content: str) -> Tuple[SurveyMetadata, List[SurveyQuesti
 
         # B. Rilevazione Domanda Strutturata (#### Q01 — Costrutto, ### D01: ...)
         m_q_struct = re.match(
-            r"^(?:#{3,4})\s+(?:Domanda\s+)?([QDP]\d+[a-zA-Z0-9_]*)(?:\s*[-–—:.]\s*(.*))?$",
+            r"^(?:#{2,4})\s+(?:\*\*)?(?:(?:Domanda\s+)([QDP]?\d+[a-zA-Z0-9_]*)|([QDP]\d+[a-zA-Z0-9_]*))(?:\*\*)?(?:\s*[-–—:.]\s*(.*))?$",
             stripped,
             re.IGNORECASE,
         )
         if m_q_struct:
-            q_id = m_q_struct.group(1).strip()
-            raw_title = _clean_text(m_q_struct.group(2)) if m_q_struct.group(2) else ""
+            raw_id = (m_q_struct.group(1) or m_q_struct.group(2)).strip()
+            q_id = f"Q{raw_id}" if raw_id.isdigit() else raw_id
+            raw_title = _clean_text(m_q_struct.group(3)) if m_q_struct.group(3) else ""
             clean_title = re.sub(r"^\s*\[.*?\]\s*", "", raw_title).strip()
             q_title = clean_title if clean_title else raw_title
             current_q = SurveyQuestion(id=q_id, title=q_title, text=q_title, section_name=current_section)
@@ -316,13 +317,14 @@ def parse_questionnaire(content: str) -> Tuple[SurveyMetadata, List[SurveyQuesti
 
         # C. Rilevazione Domanda Lineare (es. Q1. Come valuta..., D2a: ...)
         m_q_linear = re.match(
-            r"^\s*(?:Domanda\s+)?([QDP]\d+[a-zA-Z0-9_]*)[.:\-–—]\s+(.+)$",
+            r"^\s*(?:\*\*)?(?:(?:Domanda\s+)([QDP]?\d+[a-zA-Z0-9_]*)|([QDP]\d+[a-zA-Z0-9_]*))(?:\*\*)?(?:[.:\-–—]\s*(?:\*\*)?|(?:\*\*)?[.:\-–—])\s+(.+)$",
             stripped,
             re.IGNORECASE,
         )
-        if m_q_linear and not stripped.startswith(("-", "*")):
-            q_id = m_q_linear.group(1).strip()
-            full_text = m_q_linear.group(2).strip()
+        if m_q_linear and not re.match(r"^[-*]\s", stripped):
+            raw_id = (m_q_linear.group(1) or m_q_linear.group(2)).strip()
+            q_id = f"Q{raw_id}" if raw_id.isdigit() else raw_id
+            full_text = m_q_linear.group(3).strip()
 
             # Estrazione di eventuali tag inline [REGIA: ...] o [FILTRO: ...]
             q_regia = ""
@@ -417,7 +419,7 @@ def parse_questionnaire(content: str) -> Tuple[SurveyMetadata, List[SurveyQuesti
 
             # 5. Istruzioni per intervistatore / note di regia
             m_help = re.match(
-                r"^[-*]\s*(?:\*\*)?(?:Istruzioni per (?:l['’])?intervistatore|Nota per (?:l['’])?intervistatore|Note di regia)[^*:]*(?:\*\*)?:?\s*(.*)$",
+                r"^[-*]\s*(?:\*\*)?(?:Istruzioni(?:\s+di\s+regia(?:\s+e\s+somministrazione)?|\s+per\s+(?:l['’])?intervistatore|\s+di\s+somministrazione|\s+generali|\s+intervistatore)?|Not[ae]\s+(?:di\s+regia|per\s+(?:l['’])?intervistatore|intervistatore))[^*:]*(?:\*\*)?:?\s*(.*)$",
                 stripped,
                 re.IGNORECASE,
             )
@@ -492,10 +494,16 @@ def parse_questionnaire(content: str) -> Tuple[SurveyMetadata, List[SurveyQuesti
 
             # 11. Continuazione testo note intervistatore multi-linea
             if parsing_mode == "help":
-                if stripped.startswith(("-", "*", ">")):
-                    sub_line = re.sub(r"^[-*>]\s*", "", stripped).strip()
-                    current_q.interviewer_notes = (current_q.interviewer_notes + " " + _clean_text(sub_line)).strip()
-                    continue
+                opt_test = _parse_option_line(stripped)
+                if opt_test or stripped.startswith("#"):
+                    parsing_mode = None
+                elif stripped.startswith(("-", "*", ">")):
+                    if re.match(r"^[-*]\s*(?:\*\*)?[A-Za-z0-9_À-ÿ\s/'-]+(?:\*\*)?:", stripped):
+                        parsing_mode = None
+                    else:
+                        sub_line = re.sub(r"^[-*>]\s*", "", stripped).strip()
+                        current_q.interviewer_notes = (current_q.interviewer_notes + " " + _clean_text(sub_line)).strip()
+                        continue
                 else:
                     current_q.interviewer_notes = (current_q.interviewer_notes + " " + _clean_text(stripped)).strip()
                     continue
