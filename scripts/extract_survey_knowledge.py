@@ -1315,7 +1315,14 @@ def main() -> None:
         default="md",
         help="Formato dell'output generato (md per templates/extracted_survey_template.md, json per dizionario strutturato)",
     )
-    parser.add_argument("--id-studio", type=str, default=None, help="Identificativo studio / nome archivio")
+    parser.add_argument(
+        "--id-studio",
+        "--title",
+        dest="id_studio",
+        type=str,
+        default=None,
+        help="Identificativo studio / titolo indagine / nome archivio",
+    )
     parser.add_argument("--committente", type=str, default=None, help="Committente originario dell'indagine")
     parser.add_argument("--anno", type=str, default=None, help="Anno o periodo di rilevazione")
     parser.add_argument("--target", type=str, default=None, help="Popolazione di riferimento e target")

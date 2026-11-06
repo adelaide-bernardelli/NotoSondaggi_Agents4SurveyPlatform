@@ -524,6 +524,15 @@ def validate_case(case_dir):
         return True
 
 def main():
+    if "-h" in sys.argv or "--help" in sys.argv:
+        print("Uso: python scripts/validate_runs.py [<cartella_caso_o_file> ...]")
+        print("\nLinter metodologico e strutturale per i casi e gli artefatti in runs/ o examples/.")
+        print("\nArgomenti:")
+        print("  <cartella_caso_o_file>   Percorso di una cartella di caso (es. examples/demo_run_biblioteca) o singolo file.")
+        print("                           Se omesso, valida automaticamente tutti i casi presenti in runs/.")
+        print("  -h, --help               Mostra questo messaggio di aiuto ed esce.")
+        sys.exit(0)
+
     cases_to_check = []
     
     all_files_ok = True

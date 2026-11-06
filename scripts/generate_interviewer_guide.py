@@ -1129,8 +1129,8 @@ def generate_guide(
         return 1
 
     fmt = output_format.lower().strip()
-    if fmt not in ("md", "html", "docx", "both"):
-        print(f"[ERRORE] Formato '{output_format}' non supportato. Formati validi: md, html, docx, both", file=sys.stderr)
+    if fmt not in ("md", "html", "docx", "both", "all"):
+        print(f"[ERRORE] Formato '{output_format}' non supportato. Formati validi: md, html, docx, both, all", file=sys.stderr)
         return 1
 
     # Calcolo percorsi di output
@@ -1140,7 +1140,7 @@ def generate_guide(
         out_base = in_path.parent / f"{in_path.stem}_guida_intervistatore"
 
     # Generazione Markdown
-    if fmt in ("md", "both"):
+    if fmt in ("md", "both", "all"):
         md_path = out_base if str(out_base).endswith(".md") else out_base.with_suffix(".md")
         md_path.parent.mkdir(parents=True, exist_ok=True)
         md_text = generate_interviewer_guide_md(metadata, questions)
@@ -1149,7 +1149,7 @@ def generate_guide(
         print(f"     Domande elaborate: {len(questions)}")
 
     # Generazione HTML
-    if fmt == "html":
+    if fmt in ("html", "all"):
         html_path = out_base if str(out_base).endswith(".html") else out_base.with_suffix(".html")
         html_path.parent.mkdir(parents=True, exist_ok=True)
         html_text = generate_interviewer_guide_html(metadata, questions)
@@ -1158,7 +1158,7 @@ def generate_guide(
         print(f"     Domande elaborate: {len(questions)}")
 
     # Generazione Word (.docx) con gestione difensiva
-    if fmt in ("docx", "both"):
+    if fmt in ("docx", "both", "all"):
         docx_path = out_base if str(out_base).endswith(".docx") else out_base.with_suffix(".docx")
         if HAS_DOCX:
             success = generate_interviewer_guide_docx(metadata, questions, docx_path)
@@ -1201,9 +1201,9 @@ def main(argv: Optional[List[str]] = None) -> int:
         "-f",
         "--format",
         type=str.lower,
-        choices=["md", "docx", "both", "html"],
+        choices=["md", "docx", "both", "html", "all"],
         default="md",
-        help="Formato della guida da generare: md (default), docx, both, html",
+        help="Formato della guida da generare: md (default), docx, both, html, all",
     )
 
     args = parser.parse_args(argv)

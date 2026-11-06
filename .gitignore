@@ -17,6 +17,14 @@ __pycache__/
 .pytest_cache/
 commit_msg.txt
 
+# Ambienti virtuali Python
+.venv
+.venv/
+venv
+venv/
+ENV/
+env/
+
 # File di sistema (Windows / macOS / Linux)
 .DS_Store
 Thumbs.db

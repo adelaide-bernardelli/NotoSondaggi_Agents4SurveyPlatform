@@ -38,6 +38,7 @@ Il progetto mantiene una struttura **perfettamente speculare** per garantire il 
 | **Skill** | `.agents/skills/<nome>/SKILL.md` | `.claude/skills/<nome>/SKILL.md` | Procedure operative invocabili dagli agenti o dal ricercatore umano |
 | **Workflow / Comandi** | `.agents/workflows/<nome>.md` | `.claude/commands/<nome>.md` | Percorsi guidati multi-fase invocabili tramite comando `/` |
 | **Template** | `templates/*_template.md` | `templates/*_template.md` | Modelli strutturati obbligatori per ogni artefatto di fase |
+| **Documentazione e Roadmap** | `docs/*.md` | `docs/*.md` | Manuale installazione, guida funzionalità, piano test umani, `docs/statoprogetto.md` e `docs/piano_operativo.md` |
 | **Casi di lavoro** | `runs/<caso>/` | `runs/<caso>/` | Cartella isolata per gli input (`source/`), gli artefatti e `status.md` |
 
 > **Regola di sincronizzazione obbligatoria**: ogni volta che viene creato o modificato un agente, una skill, un workflow o una regola di progetto, la modifica deve essere applicata **specularmente** in entrambe le architetture (`.agents/` e `.claude/`, `AGENTS.md` e `CLAUDE.md`).

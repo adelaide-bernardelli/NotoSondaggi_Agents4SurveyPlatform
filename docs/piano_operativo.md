@@ -7,14 +7,15 @@
 > **Ph.D Student**: Adelaide Emma Bernardelli  
 > **Supervisione Accademica**: Prof.ssa Alessandra Amendola  
 > **Committente / Partner Industriale**: Noto Sondaggi SRL  
-> **Riferimento di Stato**: `statoprogetto.md` (Versione 3.0 — Censimento dei 35 Task)  
+> **Riferimento di Stato**: [`docs/statoprogetto.md`](statoprogetto.md) (Versione 3.1 — Censimento dei 35 Task)  
+> **Stato di Avanzamento Attuale**: Le Milestone **M0 – M8** e i 19 task correlati (#01, #02, #03, #04, #05, #07, #08, #09, #10, #12, #13, #15, #16, #17, #19, #22, #26, #27, #33) sono stati interamente implementati a livello software e si trovano attualmente **IN FASE DI TEST UMANO** secondo i Protocolli di Collaudo H1 – H10 di [`docs/piano_test_umani.md`](piano_test_umani.md). Le Milestone **M9 – M12** e i restanti task sono in attesa dell'allineamento con Noto Sondaggi SRL e il rispettivo DPO (**Gate di Stop**).  
 > **Principio Guida**: Massimizzazione dell'autonomia realizzativa del ricercatore, coerenza tematica modulare (divieto di frammentazione tra moduli non correlati), tracciabilità atomica (1 Milestone = 1 Commit Git) e perimetro Human-in-the-Loop rigoroso.
 
 ---
 
 ## 1. Architettura del Piano e Principi di Sviluppo
 
-Il presente piano operativo traduce i 35 task censiti in `statoprogetto.md` in una roadmap esecutiva rigorosa, strutturata per consentire allo sviluppatore/ricercatore di procedere in maniera focalizzata, progressiva e verificabile.
+Il presente piano operativo traduce i 35 task censiti in [`docs/statoprogetto.md`](statoprogetto.md) in una roadmap esecutiva rigorosa, strutturata per consentire allo sviluppatore/ricercatore di procedere in maniera focalizzata, progressiva e verificabile.
 
 ### 1.1 Regole di Esecuzione delle Milestones
 1. **Relazione Biunivoca Milestone-Commit (1 Milestone = 1 Commit Git)**:
@@ -40,22 +41,22 @@ Il presente piano operativo traduce i 35 task censiti in `statoprogetto.md` in u
 
 ## 2. Quadro Sinottico della Roadmap Operativa (13 Milestones, 6 Track)
 
-| ID | Track Tematica | Titolo Funzionale | Conventional Commit Proposto | Dipendenza da Noto | Task statoprogetto.md | File Chiave Coinvolti | Comando di Verifica |
-| :---: | :--- | :--- | :--- | :---: | :---: | :--- | :--- |
-| **M0** | **Track 0: Baseline & QA** | Consolidamento baseline, QA validator, suite test e fixture demo biblioteca | `chore(core): consolidate baseline state, QA validators and demo run` | Nessuna (100% Autonomo) | #01, #02, #03, #04, #16, #17, #19 | `statoprogetto.md`, `scripts/check_mirror_sync.py`, `scripts/validate_runs.py`, `tests/test_qa_baseline.py`, `piano_operativo.md` | `python scripts/check_mirror_sync.py`<br>`python scripts/validate_runs.py examples/demo_run_biblioteca`<br>`python -m unittest tests/test_qa_baseline.py` |
-| **M1** | **Track 1: Fieldwork Bridge** | Parser questionario ed esportatore nativo LimeSurvey TSV (14 colonne standard) | `feat(export): implement automated LimeSurvey TSV structure generator from final questionnaire` | Nessuna (100% Autonomo) | #26 | `scripts/export_limesurvey.py`, `tests/test_export_limesurvey.py`, `tests/__init__.py` | `python scripts/export_limesurvey.py examples/demo_run_biblioteca/final.md`<br>`python -m unittest tests/test_export_limesurvey.py` |
-| **M2** | **Track 1: Fieldwork Bridge** | Integrazione export LimeSurvey nella pipeline multi-agente e specularità | `feat(pipeline): integrate LimeSurvey export into survey pipeline and update dual mirror specifications` | Nessuna (100% Autonomo) | #26, #15, #02 | `.agents/skills/noto-survey-pipeline/SKILL.md`, `.claude/skills/noto-survey-pipeline/SKILL.md`, `AGENTS.md`, `CLAUDE.md` | `python scripts/check_mirror_sync.py`<br>`python scripts/validate_runs.py examples/demo_run_biblioteca` |
-| **M3** | **Track 2: Knowledge & Extractor** | Definizione speculare della skill specialistica `noto-survey-extractor` | `feat(extractor): implement dual mirrored noto-survey-extractor skill for historical questionnaire ingestion` | Nessuna (100% Autonomo) | #09, #22, #02 | `.agents/skills/noto-survey-extractor/SKILL.md`, `.claude/skills/noto-survey-extractor/SKILL.md`, agenti, `AGENTS.md`, `CLAUDE.md` | `python scripts/check_mirror_sync.py` |
-| **M4** | **Track 2: Knowledge & Extractor** | Tool CLI di estrazione e libreria baseline socio-demografica (Istat) ed elettorale | `feat(knowledge): add survey extraction CLI and canonical demographic and political baseline batteries` | Nessuna (100% Autonomo) | #08, #09, #22 | `scripts/extract_survey_knowledge.py`, `knowledge/demographics_standard.json`, `knowledge/political_batteries_core.json` | `python scripts/extract_survey_knowledge.py --help`<br>`python -m unittest tests/test_survey_knowledge.py` |
-| **M5** | **Track 3: Regia Intervistatore** | Generatore guida intervistatore CATI/CAPI con note di regia e formato Word/Markdown | `feat(interviewer): implement interviewer guide generator with typographical regia instructions and docx export` | Nessuna (100% Autonomo) | #27, #12 | `scripts/generate_interviewer_guide.py`, `tests/test_interviewer_guide.py` | `python scripts/generate_interviewer_guide.py examples/demo_run_biblioteca/final.md`<br>`python -m unittest tests/test_interviewer_guide.py` |
-| **M6** | **Track 3: Regia Intervistatore** | Standardizzazione sintassi di regia nei template, nelle skill e nel linter | `refactor(drafting): standardize interviewer regia syntax across templates, skills and validator` | Nessuna (100% Autonomo) | #27, #07, #15, #17 | `templates/questionnaire_template.md`, `templates/final_template.md`, skill drafting/consolidation, `scripts/validate_runs.py` | `python scripts/check_mirror_sync.py`<br>`python scripts/validate_runs.py examples/demo_run_biblioteca` |
-| **M7** | **Track 4: Reporting AGCOM** | Template normativo e generatore automatico Scheda AGCOM (Delibera 256/10/CSP) | `feat(agcom): add regulatory AGCOM survey disclosure template and automated report generator` | Nessuna (100% Autonomo) | #33 | `templates/agcom_template.md`, `scripts/generate_agcom_report.py`, `tests/test_agcom_report.py` | `python scripts/generate_agcom_report.py examples/demo_run_biblioteca`<br>`python -m unittest tests/test_agcom_report.py` |
-| **M8** | **Track 4: Reporting AGCOM** | Attivazione controllata `reporting-agent` e skill speculare `noto-agcom-reporting` | `feat(reporting): activate reporting-agent for automated AGCOM disclosure with mirrored skill` | Nessuna (100% Autonomo) | #33, #02 (differito #28) | `.agents/skills/noto-agcom-reporting/SKILL.md`, `.claude/skills/noto-agcom-reporting/SKILL.md`, `reporting-agent.md`, `AGENTS.md`, `CLAUDE.md` | `python scripts/check_mirror_sync.py` |
-| 🛑 | **STOP OBBLIGATORIO** | **Gate di Stop: Allineamento e Validazione Esterna con Noto Sondaggi SRL & DPO** | *Nessun commit — Sessione di lavoro esterna (riunione 20-25 min e riscontro scritto)* | **BLOCCANTE PER M9-M12** | #06, #08, #11, #12, #14, #23, #24, #25 | Documento di sintesi, demo dal vivo esportatori, checklist §5.1 di statoprogetto.md | Verbale di allineamento firmato o riscontro email formale Noto Sondaggi |
-| **M9** | **Track 5: Post-Feedback Noto** | Integrazione standard socio-demografici e batterie politiche ufficiali Noto | `feat(noto-standards): integrate official Noto demographics, client taxonomy and calibrated historical batteries` | Sbloccato da Feedback Noto | #06, #08, #23 | `knowledge/noto_demographics_profile.json`, `knowledge/noto_historical_batteries.json`, `templates/brief_template.md` | `python scripts/check_mirror_sync.py`<br>`python -m unittest tests/test_survey_knowledge.py` |
-| **M10** | **Track 5: Post-Feedback Noto** | Recepimento prescrizioni DPO/legale su Art. 9 GDPR e informativa di somministrazione | `refactor(compliance): incorporate DPO legal review feedback into Art 9 GDPR screening checklist and consent notices` | Sbloccato da Parere DPO | #13, #14 | `templates/compliance_template.md`, skill compliance speculari, `AGENTS.md`, `CLAUDE.md` | `python scripts/check_mirror_sync.py` |
-| **M11** | **Track 5: Post-Feedback Noto** | Validazione end-to-end su studio di caso reale Noto Sondaggi (`runs/caso-reale-noto/`) | `test(validation): complete full end-to-end benchmark run on real Noto Sondaggi case study` | Sbloccato da Dati Reali Noto | #20, #22, #26, #27, #33 | `runs/caso-reale-noto/*` | `python scripts/validate_runs.py runs/caso-reale-noto` |
-| **M12** | **Track 5: Post-Feedback Noto** | Chiusura Release v1.0.0, aggiornamento ufficiale `statoprogetto.md` e sintesi accademica | `docs(release): finalize v1.0.0 milestone with completed Modulo A and AGCOM reporting` | Sbloccato da Approvazione Finale | Tutti i 35 task riesaminati | `statoprogetto.md`, `README.md`, documentazione istituzionale | `python scripts/check_mirror_sync.py`<br>`python scripts/validate_runs.py examples/demo_run_biblioteca runs/caso-reale-noto`<br>`python -m unittest discover tests/` |
+| ID | Track Tematica | Titolo Funzionale | Stato di Esecuzione & Test Umano | Conventional Commit Proposto | Dipendenza da Noto | Task docs/statoprogetto.md | File Chiave Coinvolti | Comando di Verifica |
+| :---: | :--- | :--- | :--- | :--- | :---: | :---: | :--- | :--- |
+| **M0** | **Track 0: Baseline & QA** | Consolidamento baseline, QA validator, suite test e fixture demo biblioteca | `ESEGUITO (SOFTWARE) — IN TEST UMANO`<br>(Protocollo H10) | `chore(core): consolidate baseline state, QA validators and demo run` | Nessuna (100% Autonomo) | #01, #02, #03, #04, #16, #17, #19 | `docs/statoprogetto.md`, `scripts/check_mirror_sync.py`, `scripts/validate_runs.py`, `tests/test_qa_baseline.py`, `docs/piano_operativo.md` | `python scripts/check_mirror_sync.py`<br>`python scripts/validate_runs.py examples/demo_run_biblioteca`<br>`python -m unittest tests/test_qa_baseline.py` |
+| **M1** | **Track 1: Fieldwork Bridge** | Parser questionario ed esportatore nativo LimeSurvey TSV (14 colonne standard) | `ESEGUITO (SOFTWARE) — IN TEST UMANO`<br>(Protocollo H6) | `feat(export): implement automated LimeSurvey TSV structure generator from final questionnaire` | Nessuna (100% Autonomo) | #26 | `scripts/export_limesurvey.py`, `tests/test_export_limesurvey.py`, `tests/__init__.py` | `python scripts/export_limesurvey.py examples/demo_run_biblioteca/final.md`<br>`python -m unittest tests/test_export_limesurvey.py` |
+| **M2** | **Track 1: Fieldwork Bridge** | Integrazione export LimeSurvey nella pipeline multi-agente e specularità | `ESEGUITO (SOFTWARE) — IN TEST UMANO`<br>(Protocolli H6, H10) | `feat(pipeline): integrate LimeSurvey export into survey pipeline and update dual mirror specifications` | Nessuna (100% Autonomo) | #26, #15, #02 | `.agents/skills/noto-survey-pipeline/SKILL.md`, `.claude/skills/noto-survey-pipeline/SKILL.md`, `AGENTS.md`, `CLAUDE.md` | `python scripts/check_mirror_sync.py`<br>`python scripts/validate_runs.py examples/demo_run_biblioteca` |
+| **M3** | **Track 2: Knowledge & Extractor** | Definizione speculare della skill specialistica `noto-survey-extractor` | `ESEGUITO (SOFTWARE) — IN TEST UMANO`<br>(Protocollo H9) | `feat(extractor): implement dual mirrored noto-survey-extractor skill for historical questionnaire ingestion` | Nessuna (100% Autonomo) | #09, #22, #02 | `.agents/skills/noto-survey-extractor/SKILL.md`, `.claude/skills/noto-survey-extractor/SKILL.md`, agenti, `AGENTS.md`, `CLAUDE.md` | `python scripts/check_mirror_sync.py` |
+| **M4** | **Track 2: Knowledge & Extractor** | Tool CLI di estrazione e libreria baseline socio-demografica (Istat) ed elettorale | `ESEGUITO (SOFTWARE) — IN TEST UMANO`<br>(Protocolli H9, H2) | `feat(knowledge): add survey extraction CLI and canonical demographic and political baseline batteries` | Nessuna (100% Autonomo) | #08, #09, #22 | `scripts/extract_survey_knowledge.py`, `knowledge/demographics_standard.json`, `knowledge/political_batteries_core.json` | `python scripts/extract_survey_knowledge.py --help`<br>`python -m unittest tests/test_survey_knowledge.py` |
+| **M5** | **Track 3: Regia Intervistatore** | Generatore guida intervistatore CATI/CAPI con note di regia e formato Word/Markdown | `ESEGUITO (SOFTWARE) — IN TEST UMANO`<br>(Protocollo H7) | `feat(interviewer): implement interviewer guide generator with typographical regia instructions and docx export` | Nessuna (100% Autonomo) | #27, #12 | `scripts/generate_interviewer_guide.py`, `tests/test_interviewer_guide.py` | `python scripts/generate_interviewer_guide.py examples/demo_run_biblioteca/final.md`<br>`python -m unittest tests/test_interviewer_guide.py` |
+| **M6** | **Track 3: Regia Intervistatore** | Standardizzazione sintassi di regia nei template, nelle skill e nel linter | `ESEGUITO (SOFTWARE) — IN TEST UMANO`<br>(Protocolli H7, H2, H5) | `refactor(drafting): standardize interviewer regia syntax across templates, skills and validator` | Nessuna (100% Autonomo) | #27, #07, #15, #17 | `templates/questionnaire_template.md`, `templates/final_template.md`, skill drafting/consolidation, `scripts/validate_runs.py` | `python scripts/check_mirror_sync.py`<br>`python scripts/validate_runs.py examples/demo_run_biblioteca` |
+| **M7** | **Track 4: Reporting AGCOM** | Template normativo e generatore automatico Scheda AGCOM (Delibera 256/10/CSP) | `ESEGUITO (SOFTWARE) — IN TEST UMANO`<br>(Protocollo H8) | `feat(agcom): add regulatory AGCOM survey disclosure template and automated report generator` | Nessuna (100% Autonomo) | #33 | `templates/agcom_template.md`, `scripts/generate_agcom_report.py`, `tests/test_agcom_report.py` | `python scripts/generate_agcom_report.py examples/demo_run_biblioteca`<br>`python -m unittest tests/test_agcom_report.py` |
+| **M8** | **Track 4: Reporting AGCOM** | Attivazione controllata `reporting-agent` e skill speculare `noto-agcom-reporting` | `ESEGUITO (SOFTWARE) — IN TEST UMANO`<br>(Protocollo H8) | `feat(reporting): activate reporting-agent for automated AGCOM disclosure with mirrored skill` | Nessuna (100% Autonomo) | #33, #02 (differito #28) | `.agents/skills/noto-agcom-reporting/SKILL.md`, `.claude/skills/noto-agcom-reporting/SKILL.md`, `reporting-agent.md`, `AGENTS.md`, `CLAUDE.md` | `python scripts/check_mirror_sync.py` |
+| 🛑 | **STOP OBBLIGATORIO** | **Gate di Stop: Allineamento e Validazione Esterna con Noto Sondaggi SRL & DPO** | `GATE ATTIVO — IN ATTESA DI ALLINEAMENTO ESTERNO` | *Nessun commit — Sessione di lavoro esterna (riunione 20-25 min e riscontro scritto)* | **BLOCCANTE PER M9-M12** | #06, #08, #11, #12, #14, #23, #24, #25 | Documento di sintesi, demo dal vivo esportatori, checklist §5.1 di `docs/statoprogetto.md` | Verbale di allineamento firmato o riscontro email formale Noto Sondaggi |
+| **M9** | **Track 5: Post-Feedback Noto** | Integrazione standard socio-demografici e batterie politiche ufficiali Noto | `IN ATTESA DI SBLOCCO`<br>(Gate di Stop Noto) | `feat(noto-standards): integrate official Noto demographics, client taxonomy and calibrated historical batteries` | Sbloccato da Feedback Noto | #06, #08, #23 | `knowledge/noto_demographics_profile.json`, `knowledge/noto_historical_batteries.json`, `templates/brief_template.md` | `python scripts/check_mirror_sync.py`<br>`python -m unittest tests/test_survey_knowledge.py` |
+| **M10** | **Track 5: Post-Feedback Noto** | Recepimento prescrizioni DPO/legale su Art. 9 GDPR e informativa di somministrazione | `IN ATTESA DI SBLOCCO`<br>(Gate di Stop DPO) | `refactor(compliance): incorporate DPO legal review feedback into Art 9 GDPR screening checklist and consent notices` | Sbloccato da Parere DPO | #13, #14 | `templates/compliance_template.md`, skill compliance speculari, `AGENTS.md`, `CLAUDE.md` | `python scripts/check_mirror_sync.py` |
+| **M11** | **Track 5: Post-Feedback Noto** | Validazione end-to-end su studio di caso reale Noto Sondaggi (`runs/caso-reale-noto/`) | `IN ATTESA DI SBLOCCO`<br>(Dati Reali Noto) | `test(validation): complete full end-to-end benchmark run on real Noto Sondaggi case study` | Sbloccato da Dati Reali Noto | #20, #22, #26, #27, #33 | `runs/caso-reale-noto/*` | `python scripts/validate_runs.py runs/caso-reale-noto` |
+| **M12** | **Track 5: Post-Feedback Noto** | Chiusura Release v1.0.0, aggiornamento ufficiale `docs/statoprogetto.md` e sintesi accademica | `IN ATTESA DI SBLOCCO`<br>(Post-validazione) | `docs(release): finalize v1.0.0 milestone with completed Modulo A and AGCOM reporting` | Sbloccato da Approvazione Finale | Tutti i 35 task riesaminati | `docs/statoprogetto.md`, `README.md`, documentazione istituzionale | `python scripts/check_mirror_sync.py`<br>`python scripts/validate_runs.py examples/demo_run_biblioteca runs/caso-reale-noto`<br>`python -m unittest discover tests/` |
 
 ---
 
@@ -67,17 +68,17 @@ Di seguito vengono dettagliate le milestone appartenenti ai blocchi realizzabili
 
 ### Milestone M0: Consolidamento Baseline, QA Validators, Suite Test e Caso Demo
 - **Track Tematica**: Track 0 — Consolidamento Baseline & QA Tooling
-- **Task Correlati in statoprogetto.md**: #01, #02, #03, #04, #16, #17, #19
-- **Condizione Operativa**: `ULTIMATO` / `Sviluppabile subito internamente` (Autonomia Totale).
+- **Task Correlati in docs/statoprogetto.md**: #01, #02, #03, #04, #16, #17, #19
+- **Condizione Operativa**: `ESEGUITO (SOFTWARE) — IN FASE DI TEST UMANO` (Collaudo metodologico/deontologico tramite [`docs/piano_test_umani.md`](piano_test_umani.md) — Protocollo H10).
 - **Obiettivo**:
-  Assicurare che il punto di partenza del repository sia rigorosamente tracciato e immutabile in git: aggiungere al version control gli script di validazione già funzionanti (`scripts/check_mirror_sync.py`, `scripts/validate_runs.py`), la prima suite di test automatizzati (`tests/test_qa_baseline.py`), il documento di censimento `statoprogetto.md`, il piano operativo `piano_operativo.md` e il caso di test end-to-end tracciato `examples/demo_run_biblioteca/`.
+  Assicurare che il punto di partenza del repository sia rigorosamente tracciato e immutabile in git: aggiungere al version control gli script di validazione già funzionanti (`scripts/check_mirror_sync.py`, `scripts/validate_runs.py`), la prima suite di test automatizzati (`tests/test_qa_baseline.py`), il documento di censimento `docs/statoprogetto.md`, il piano operativo `docs/piano_operativo.md` e il caso di test end-to-end tracciato `examples/demo_run_biblioteca/`.
 - **Messaggio di Commit Proposto**:
   ```bash
   git commit -m "chore(core): consolidate baseline state, QA validators and demo run"
   ```
 - **File Toccati / Creati**:
-  - `statoprogetto.md` (Documento di censimento ufficiale dei 35 task);
-  - `piano_operativo.md` (La presente roadmap esecutiva);
+  - `docs/statoprogetto.md` (Documento di censimento ufficiale dei 35 task);
+  - `docs/piano_operativo.md` (La presente roadmap esecutiva);
   - `scripts/check_mirror_sync.py` (Script di verifica automatica specularità `.agents/` vs `.claude/`);
   - `scripts/validate_runs.py` (Linter metodologico degli artefatti in `runs/` ed `examples/`);
   - `tests/__init__.py` e `tests/test_qa_baseline.py` (Inizializzazione suite di test unitari);
@@ -86,7 +87,7 @@ Di seguito vengono dettagliate le milestone appartenenti ai blocchi realizzabili
   1. Verificare che `scripts/check_mirror_sync.py` termini con esito zero;
   2. Verificare che `scripts/validate_runs.py examples/demo_run_biblioteca` validi il caso demo senza errori;
   3. Verificare che la suite unit test `python -m unittest tests/test_qa_baseline.py` superi tutti i 6 test di regressione;
-  4. Aggiungere i file tracciati a git staging (`git add statoprogetto.md piano_operativo.md scripts/ tests/ examples/demo_run_biblioteca/`);
+  4. Aggiungere i file tracciati a git staging (`git add docs/statoprogetto.md docs/piano_operativo.md scripts/ tests/ examples/demo_run_biblioteca/`);
   5. Eseguire il commit atomico consolidando la baseline pulita.
 - **Criteri di Accettazione e Verifica**:
   ```powershell
@@ -104,8 +105,8 @@ Di seguito vengono dettagliate le milestone appartenenti ai blocchi realizzabili
 
 ### Milestone M1: Parser del Questionario Consolidato ed Esportatore LimeSurvey TSV (14 Colonne Standard)
 - **Track Tematica**: Track 1 — Fieldwork Bridge (Integrazione Piattaforma di Rilevazione)
-- **Task Correlati in statoprogetto.md**: #26 (Priorità Tecnica)
-- **Condizione Operativa**: `Sviluppabile subito internamente` (Autonomia Totale — Noto impiega ordinariamente LimeSurvey).
+- **Task Correlati in docs/statoprogetto.md**: #26 (Priorità Tecnica)
+- **Condizione Operativa**: `ESEGUITO (SOFTWARE) — IN FASE DI TEST UMANO` (Collaudo metodologico/deontologico tramite [`docs/piano_test_umani.md`](piano_test_umani.md) — Protocollo H6).
 - **Obiettivo**:
   Sviluppare un tool CLI Python autonomo (`scripts/export_limesurvey.py`) che prenda in ingresso un questionario consolidato conforme a `templates/final_template.md` (es. `examples/demo_run_biblioteca/final.md` o `runs/<caso>/final.md`) e produca il file di definizione indagine nativo tab-delimited (`.txt` TSV) importabile direttamente nell'interfaccia amministrativa di LimeSurvey, senza dipendenze esterne.
 - **Messaggio di Commit Proposto**:
@@ -161,8 +162,8 @@ Di seguito vengono dettagliate le milestone appartenenti ai blocchi realizzabili
 
 ### Milestone M2: Integrazione Esportatore LimeSurvey nella Pipeline Multi-Agente
 - **Track Tematica**: Track 1 — Fieldwork Bridge
-- **Task Correlati in statoprogetto.md**: #26, #15, #02
-- **Condizione Operativa**: `Sviluppabile subito internamente` (Autonomia Totale).
+- **Task Correlati in docs/statoprogetto.md**: #26, #15, #02
+- **Condizione Operativa**: `ESEGUITO (SOFTWARE) — IN FASE DI TEST UMANO` (Collaudo metodologico/deontologico tramite [`docs/piano_test_umani.md`](piano_test_umani.md) — Protocolli H6, H10).
 - **Obiettivo**:
   Integrare l'invocazione dell'esportatore LimeSurvey all'interno della skill di orchestrazione `noto-survey-pipeline` e nel contratto di `questionnaire-agent` al momento della finalizzazione di `final.md`, garantendo la perfetta simmetria tra Google Antigravity (`.agents/`) e Claude Code (`.claude/`).
 - **Messaggio di Commit Proposto**:
@@ -191,8 +192,8 @@ Di seguito vengono dettagliate le milestone appartenenti ai blocchi realizzabili
 
 ### Milestone M3: Definizione Speculare della Skill `noto-survey-extractor`
 - **Track Tematica**: Track 2 — Knowledge & Historical Extractor
-- **Task Correlati in statoprogetto.md**: #09, #22, #02
-- **Condizione Operativa**: `Sviluppabile subito internamente` (Autonomia Totale — Proposta architetturale formalizzata).
+- **Task Correlati in docs/statoprogetto.md**: #09, #22, #02
+- **Condizione Operativa**: `ESEGUITO (SOFTWARE) — IN FASE DI TEST UMANO` (Collaudo metodologico/deontologico tramite [`docs/piano_test_umani.md`](piano_test_umani.md) — Protocollo H9).
 - **Obiettivo**:
   Formalizzare e implementare la nuova skill specialistica `noto-survey-extractor` per estrarre in modo strutturato formulari, scale, codici e metadati da questionari storici e report già disponibili internamente, inserendola nel registro delle skill con perfetta specularità.
 - **Messaggio di Commit Proposto**:
@@ -207,12 +208,12 @@ Di seguito vengono dettagliate le milestone appartenenti ai blocchi realizzabili
   - `scripts/check_mirror_sync.py` (Aggiornamento per verificare l'esistenza e la specularità di tutte le 7 skill).
 - **Dettaglio Implementativo Passo-Passo**:
   1. Creare la specifica di `noto-survey-extractor`:
-     - Frontmatter YAML valido con descrizione, parametri e contesto;
-     - Fasi operative:
-       a. Parsing del documento in input (identificazione di sezioni, numeri domanda, testi, scale);
-       b. Riconoscimento delle tipologie standard (Fiducia Leader, Voto Elettorale, Batterie di Gradimento, Dati Socio-Demografici);
-       c. Estrazione della scala utilizzata (es. 1-10, 4 punti con etichette semantiche, dicotomica Si/No);
-       d. Generazione del dizionario strutturato standardizzato;
+      - Frontmatter YAML valido con descrizione, parametri e contesto;
+      - Fasi operative:
+        a. Parsing del documento in input (identificazione di sezioni, numeri domanda, testi, scale);
+        b. Riconoscimento delle tipologie standard (Fiducia Leader, Voto Elettorale, Batterie di Gradimento, Dati Socio-Demografici);
+        c. Estrazione della scala utilizzata (es. 1-10, 4 punti con etichette semantiche, dicotomica Si/No);
+        d. Generazione del dizionario strutturato standardizzato;
   2. Aggiornare `questionnaire-agent.md` e il coordinatore;
   3. Modificare `scripts/check_mirror_sync.py` affinché conti 7 skill attive anziché 6;
   4. Verificare che l'architettura speculare superi il test.
@@ -226,8 +227,8 @@ Di seguito vengono dettagliate le milestone appartenenti ai blocchi realizzabili
 
 ### Milestone M4: Tooling di Estrazione e Libreria Baseline Socio-Demografica (Istat) ed Elettorale
 - **Track Tematica**: Track 2 — Knowledge & Historical Extractor
-- **Task Correlati in statoprogetto.md**: #08, #09, #22
-- **Condizione Operativa**: `Sviluppabile subito internamente` (Autonomia Totale — Basato su standard Istat/Eurostat e questionari campione noti).
+- **Task Correlati in docs/statoprogetto.md**: #08, #09, #22
+- **Condizione Operativa**: `ESEGUITO (SOFTWARE) — IN FASE DI TEST UMANO` (Collaudo metodologico/deontologico tramite [`docs/piano_test_umani.md`](piano_test_umani.md) — Protocolli H9, H2).
 - **Obiettivo**:
   Sviluppare lo script CLI `scripts/extract_survey_knowledge.py` per automatizzare l'estrazione e formalizzare nella cartella `knowledge/` la libreria canonica di riferimento delle batterie socio-demografiche e delle formulazioni elettorali standard (utilizzabile dagli agenti in fase di drafting per garantire comparabilità storica).
 - **Messaggio di Commit Proposto**:
@@ -258,8 +259,8 @@ Di seguito vengono dettagliate le milestone appartenenti ai blocchi realizzabili
 
 ### Milestone M5: Generatore Guida Intervistatore CATI/CAPI con Istruzioni di Regia Tipografica
 - **Track Tematica**: Track 3 — Regia Intervistatore e Formato di Somministrazione
-- **Task Correlati in statoprogetto.md**: #27, #12
-- **Condizione Operativa**: `Sviluppabile subito internamente` (Autonomia Totale).
+- **Task Correlati in docs/statoprogetto.md**: #27, #12
+- **Condizione Operativa**: `ESEGUITO (SOFTWARE) — IN FASE DI TEST UMANO` (Collaudo metodologico/deontologico tramite [`docs/piano_test_umani.md`](piano_test_umani.md) — Protocollo H7).
 - **Obiettivo**:
   Sviluppare un generatore automatico (`scripts/generate_interviewer_guide.py`) che trasformi il questionario finale (`final.md`) in una guida esecutiva per l'intervistatore della sala telefonica CATI o per somministrazione assistita CAPI. Il layout tipografico deve separare in modo netto il testo da pronunciare a voce alta dalle note di regia riservate all'operatore, garantendo funzionamento autonomo con zero dipendenze obbligatorie (output primario Markdown/HTML e supporto opzionale a `.docx` tramite `python-docx`).
 - **Messaggio di Commit Proposto**:
@@ -298,8 +299,8 @@ Di seguito vengono dettagliate le milestone appartenenti ai blocchi realizzabili
 
 ### Milestone M6: Standardizzazione Sintassi Regia nei Template, Skill e Linter
 - **Track Tematica**: Track 3 — Regia Intervistatore e Formato di Somministrazione
-- **Task Correlati in statoprogetto.md**: #27, #07, #15, #17
-- **Condizione Operativa**: `Sviluppabile subito internamente` (Autonomia Totale).
+- **Task Correlati in docs/statoprogetto.md**: #27, #07, #15, #17
+- **Condizione Operativa**: `ESEGUITO (SOFTWARE) — IN FASE DI TEST UMANO` (Collaudo metodologico/deontologico tramite [`docs/piano_test_umani.md`](piano_test_umani.md) — Protocolli H7, H2, H5).
 - **Obiettivo**:
   Uniformare la sintassi delle istruzioni di regia nei template obbligatori (`questionnaire_template.md` e `final_template.md`), aggiornare specularmente le skill di redazione e consolidamento (`noto-questionnaire-drafting`, `noto-questionnaire-consolidation`) ed estendere il linter `scripts/validate_runs.py` per verificare che ogni item contenga prescrizioni esplicite di regia per l'intervistatore/programmatore.
 - **Messaggio di Commit Proposto**:
@@ -329,8 +330,8 @@ Di seguito vengono dettagliate le milestone appartenenti ai blocchi realizzabili
 
 ### Milestone M7: Template Normativo e Generatore Automatico Scheda Informativa AGCOM
 - **Track Tematica**: Track 4 — Reporting Regolamentare AGCOM (Modulo B Autonomo)
-- **Task Correlati in statoprogetto.md**: #33 (Deliverable obbligatorio per legge)
-- **Condizione Operativa**: `Sviluppabile subito internamente` (Autonomia Totale — Basato sulla Delibera AGCOM n. 256/10/CSP e report storici noti).
+- **Task Correlati in docs/statoprogetto.md**: #33 (Deliverable obbligatorio per legge)
+- **Condizione Operativa**: `ESEGUITO (SOFTWARE) — IN FASE DI TEST UMANO` (Collaudo metodologico/deontologico tramite [`docs/piano_test_umani.md`](piano_test_umani.md) — Protocollo H8).
 - **Obiettivo**:
   Creare il template ufficiale `templates/agcom_template.md` e lo script di compilazione automatica `scripts/generate_agcom_report.py` per generare la Scheda Informativa AGCOM obbligatoria ai sensi della Delibera AGCOM n. 256/10/CSP per qualsiasi sondaggio destinato alla pubblicazione su media o canali editoriali.
 - **Messaggio di Commit Proposto**:
@@ -378,8 +379,8 @@ Di seguito vengono dettagliate le milestone appartenenti ai blocchi realizzabili
 
 ### Milestone M8: Attivazione Controllata di `reporting-agent` e Skill Speculare `noto-agcom-reporting`
 - **Track Tematica**: Track 4 — Reporting Regolamentare AGCOM (Modulo B Autonomo)
-- **Task Correlati in statoprogetto.md**: #33, #02 (differito #28)
-- **Condizione Operativa**: `Sviluppabile subito internamente` (Autonomia Totale).
+- **Task Correlati in docs/statoprogetto.md**: #33, #02 (differito #28)
+- **Condizione Operativa**: `ESEGUITO (SOFTWARE) — IN FASE DI TEST UMANO` (Collaudo metodologico/deontologico tramite [`docs/piano_test_umani.md`](piano_test_umani.md) — Protocollo H8).
 - **Obiettivo**:
   Attivare formalmente nel sistema il ruolo operativo di `reporting-agent` circoscritto alla produzione della Scheda AGCOM, implementando specularmente la nuova skill `noto-agcom-reporting` in `.agents/` e `.claude/`, aggiornando `AGENTS.md`, `CLAUDE.md` e lo script di verifica specularità (mantenendo differite le analisi statistiche complesse e la pesatura IPF di #28 e #30-#32).
 - **Messaggio di Commit Proposto**:
@@ -416,9 +417,10 @@ Di seguito vengono dettagliate le milestone appartenenti ai blocchi realizzabili
 > - Guida intervistatore con regia tipografica ed esportazione Word `.docx`;
 > - Generatore normativo della Scheda AGCOM (Delibera 256/10/CSP).
 >
-> Procedere oltre questo punto senza un riscontro formale da Noto Sondaggi SRL comporterebbe la formulazione di assunzioni arbitrarie su processi proprietari, violando il principio Human-in-the-Loop e introducendo debito tecnico. **Lo sviluppo del codice SI ARRESTA fino all'esito della sessione di allineamento.**
+> Procedere oltre questo punto senza un riscontro formale da Noto Sondaggi SRL comporterebbe la formulazione di assunzioni arbitrarie su processi proprietari, violando il principio Human-in-the-Loop e introducendo debito tecnico. **Lo sviluppo del codice SI ARRESTA fino all'esito della sessione di allineamento.**  
+> - **Stato Corrente**: 🛑 **GATE ATTIVO — IN ATTESA DI ALLINEAMENTO ESTERNO CON NOTO SONDAGGI SRL & DPO** (Sospensione obbligatoria prima dell'avvio delle milestone M9–M12 e dei task collegati #06, #08, #11, #12, #14, #23, #24, #25).
 
-### 4.1 Fabbisogno Informativo Analitico (I 4 Quesiti Tecnici di `statoprogetto.md` §5.1)
+### 4.1 Fabbisogno Informativo Analitico (I 4 Quesiti Tecnici di `docs/statoprogetto.md` §5.1)
 
 Il ricercatore sottopone a Noto Sondaggi SRL la seguente checklist operativa:
 
@@ -464,8 +466,8 @@ Le seguenti milestone vengono sbloccate ed eseguite a valle dell'incontro con No
 
 ### Milestone M9: Integrazione Standard Socio-Demografici e Batterie Politiche Ufficiali Noto
 - **Track Tematica**: Track 5 — Post-Feedback Noto & Calibrazione Finale
-- **Task Correlati in statoprogetto.md**: #06, #08, #23
-- **Condizione Operativa**: `Serve Noto per revisionare ma si può già procedere allo sviluppo` -> Sbloccato da Feedback Noto.
+- **Task Correlati in docs/statoprogetto.md**: #06, #08, #23
+- **Condizione Operativa**: `IN ATTESA DI SBLOCCO` (Subordinata al superamento del Gate di Stop con Noto Sondaggi SRL).
 - **Obiettivo**:
   Integrare nella knowledge base e nei template di redazione le convenzioni demografiche ufficiali concordate con Noto Sondaggi (partizioni anagrafiche, codifiche istruzione/professione) e processare i questionari storici forniti tramite la skill `noto-survey-extractor` per standardizzare le serie storiche dei leader politici.
 - **Messaggio di Commit Proposto**:
@@ -493,8 +495,8 @@ Le seguenti milestone vengono sbloccate ed eseguite a valle dell'incontro con No
 
 ### Milestone M10: Recepimento Prescrizioni DPO/Legale su Art. 9 GDPR e Informativa
 - **Track Tematica**: Track 5 — Post-Feedback Noto & Calibrazione Finale
-- **Task Correlati in statoprogetto.md**: #13, #14
-- **Condizione Operativa**: `Serve Noto per revisionare ma si può già procedere allo sviluppo` -> Sbloccato da Parere DPO.
+- **Task Correlati in docs/statoprogetto.md**: #13, #14
+- **Condizione Operativa**: `IN ATTESA DI SBLOCCO` (Subordinata al riscontro del DPO Noto su Art. 9 GDPR).
 - **Obiettivo**:
   Aggiornare la checklist preliminare del `compliance-agent` (`templates/compliance_template.md`) e le skill speculari con le indicazioni fornite dal DPO o dal consulente privacy di Noto Sondaggi, inserendo il testo validato dell'informativa di somministrazione (formula breve per interviste CATI, formula estesa con casella di consenso per CAWI).
 - **Messaggio di Commit Proposto**:
@@ -519,8 +521,8 @@ Le seguenti milestone vengono sbloccate ed eseguite a valle dell'incontro con No
 
 ### Milestone M11: Validazione End-to-End su Caso Reale Noto Sondaggi
 - **Track Tematica**: Track 5 — Post-Feedback Noto & Calibrazione Finale
-- **Task Correlati in statoprogetto.md**: #20, #22, #26, #27, #33
-- **Condizione Operativa**: Sbloccato dall'acquisizione di un'indagine reale da Noto Sondaggi.
+- **Task Correlati in docs/statoprogetto.md**: #20, #22, #26, #27, #33
+- **Condizione Operativa**: `IN ATTESA DI SBLOCCO` (Subordinata alla fornitura di dati reali da parte di Noto Sondaggi SRL).
 - **Obiettivo**:
   Eseguire l'intero flusso operativo su un caso studio reale completo fornito da Noto Sondaggi (`runs/caso-reale-noto/`), validando sequenzialmente tutte le fasi (brief, questionario, audit metodologico, compliance screening, questionario consolidato, esportazione TSV per LimeSurvey, guida per l'intervistatore in Word e Scheda Informativa AGCOM).
 - **Messaggio di Commit Proposto**:
@@ -553,21 +555,21 @@ Le seguenti milestone vengono sbloccate ed eseguite a valle dell'incontro con No
 
 ### Milestone M12: Release v1.0.0, Chiusura Modulo A + AGCOM e Rendicontazione Finale
 - **Track Tematica**: Track 5 — Post-Feedback Noto & Calibrazione Finale
-- **Task Correlati in statoprogetto.md**: Tutti i 35 task riesaminati
-- **Condizione Operativa**: Chiusura formale del Modulo A e della componente AGCOM del Modulo B.
+- **Task Correlati in docs/statoprogetto.md**: Tutti i 35 task riesaminati
+- **Condizione Operativa**: `IN ATTESA DI SBLOCCO` (Chiusura Release v1.0.0 a valle del completamento della validazione).
 - **Obiettivo**:
-  Consolidare la versione definitiva di produzione v1.0.0 della piattaforma, aggiornare formalmente `statoprogetto.md` portando a `FATTO` tutti i task completati, redigere l'Executive Summary di chiusura per la supervisione accademica della Prof.ssa Alessandra Amendola e aggiornare il file `README.md` con la guida completa per ricercatori e sviluppatori.
+  Consolidare la versione definitiva di produzione v1.0.0 della piattaforma, aggiornare formalmente `docs/statoprogetto.md` portando a `FATTO` tutti i task completati, redigere l'Executive Summary di chiusura per la supervisione accademica della Prof.ssa Alessandra Amendola e aggiornare il file `README.md` con la guida completa per ricercatori e sviluppatori.
 - **Messaggio di Commit Proposto**:
   ```bash
   git commit -m "docs(release): finalize v1.0.0 milestone with completed Modulo A and AGCOM reporting"
   ```
 - **File Toccati / Creati**:
-  - `statoprogetto.md` (Aggiornamento tabellare dei task con quadratura statistica finale);
+  - `docs/statoprogetto.md` (Aggiornamento tabellare dei task con quadratura statistica finale);
   - `README.md` (Documentazione completa di sistema, manuale di utilizzo dei comandi CLI e dei workflow multi-agente);
-  - `piano_operativo.md` (Consolidamento dello stato di completamento di tutte le 13 milestone);
+  - `docs/piano_operativo.md` (Consolidamento dello stato di completamento di tutte le 13 milestone);
   - Tag di release Git: `v1.0.0-moduloA-agcom`.
 - **Dettaglio Implementativo Passo-Passo**:
-  1. Aggiornare le quote percentuali in `statoprogetto.md` riflettendo il completamento di tutti i task del Modulo A, dei fieldwork export e della scheda AGCOM;
+  1. Aggiornare le quote percentuali in `docs/statoprogetto.md` riflettendo il completamento di tutti i task del Modulo A, dei fieldwork export e della scheda AGCOM;
   2. Verificare l'esecuzione dell'intera suite di QA (specularità, validazione runs, test unitari);
   3. Eseguire il commit e apporre il tag di versione `v1.0.0-moduloA-agcom`.
 - **Criteri di Accettazione e Verifica**:
@@ -581,47 +583,47 @@ Le seguenti milestone vengono sbloccate ed eseguite a valle dell'incontro con No
 
 ---
 
-## 6. Matrice di Quadratura tra i 35 Task di `statoprogetto.md` e le Milestones
+## 6. Matrice di Quadratura tra i 35 Task di `docs/statoprogetto.md` e le Milestones
 
-La tabella sottostante dimostra analiticamente la copertura esaustiva di tutti i 35 task del progetto attraverso le milestone operative, evidenziando quali elementi vengono risolti in autonomia (M0-M8), quali richiedono l'allineamento con Noto (M9-M11) e quali rimangono differiti a fasi avanzate del Modulo B come stabilito in `statoprogetto.md`.
+La tabella sottostante dimostra analiticamente la copertura esaustiva di tutti i 35 task del progetto attraverso le milestone operative, evidenziando quali elementi sono già stati implementati a livello software e si trovano attualmente in fase di test umano (M0–M8, coprenti 19 task verificati tramite i protocolli H1–H10 di [`docs/piano_test_umani.md`](piano_test_umani.md)), quali richiedono l'allineamento con Noto Sondaggi SRL e DPO al Gate di Stop (M9–M11, coprenti 7 task) e quali rimangono differiti a fasi avanzate del Modulo B o infrastrutturali (9 task) come stabilito in [`docs/statoprogetto.md`](statoprogetto.md).
 
-| # | Ambito / Task | Stato Iniziale | Milestone Associata | Esito a Fine Roadmap | Note Metodologiche & Tecniche |
-| :-: | :--- | :--- | :---: | :---: | :--- |
-| **01** | Regole deontologiche e GDPR/AI Act | `FATTO` | **M0** | `FATTO` | Consolidato in `AGENTS.md` e `CLAUDE.md`. |
-| **02** | Specularità Antigravity e Claude | `FATTO` | **M0, M2, M3, M6, M8** | `FATTO` | Mantenuta e validata ad ogni milestone con `check_mirror_sync.py`. |
-| **03** | Separazione ruoli coordinatore/subagenti | `FATTO` | **M0** | `FATTO` | Il coordinatore non redige mai direttamente i documenti. |
-| **04** | Protocollo Human-in-the-Loop in chat | `FATTO` | **M0** | `FATTO` | Tracciamento in `status.md` con stop obbligatorio. |
-| **05** | Skill `noto-brief-structuring` | `FATTO` | **M0, M9** | `FATTO` | Rifinito con le tipologie di committenza Noto in M9. |
-| **06** | Mappatura committenze abituali Noto | `ABBOZZATO` | **M9** | `FATTO` | Formalizzato post-feedback Noto in `brief_template.md`. |
-| **07** | Skill `noto-questionnaire-drafting` | `FATTO` | **M0, M6** | `FATTO` | Aggiornato con la sintassi di regia per intervistatore in M6. |
-| **08** | Batterie socio-demografiche e classi età | `ABBOZZATO` | **M4, M9** | `FATTO` | Baseline standard Istat/Eurostat in M4; calibrazione Noto in M9. |
-| **09** | Serie storiche elettorali & `extractor` | `ABBOZZATO` | **M3, M4, M9** | `FATTO` | Skill creata in M3, tool CLI in M4, validata con dati reali in M9. |
-| **10** | Griglia audit 11 colonne / 12 campi | `FATTO` | **M0** | `FATTO` | Standard metodologico consolidato in `methodology_template.md`. |
-| **11** | Calibrazione euristiche commerciali | `ABBOZZATO` | **Gate Stop, M9** | `FATTO` | Discusso nell'incontro e integrato nelle regole di audit. |
-| **12** | Specificità CATI vs CAWI | `ABBOZZATO` | **M5, M6, Gate** | `FATTO` | Note di regia per operatore telefonico generate in M5 e M6. |
-| **13** | Checklist privacy Art. 9 GDPR | `FATTO` | **M0, M10** | `FATTO` | Struttura attiva; raffinata con prescrizioni DPO in M10. |
-| **14** | Interlocuzione DPO / privacy | `IPOTIZZATO` | **Gate Stop, M10** | `FATTO` | Incontro di raccordo e formalizzazione nel template in M10. |
-| **15** | Skill `noto-questionnaire-consolidation` | `FATTO` | **M0, M2, M6** | `FATTO` | Integrata con trigger per LimeSurvey e note di regia. |
-| **16** | Script `check_mirror_sync.py` | `FATTO` | **M0, M3, M8** | `FATTO` | Esteso per 8 skill e 7 template standard. |
-| **17** | Linter `validate_runs.py` | `FATTO` | **M0, M2, M6** | `FATTO` | Esteso per verificare TSV LimeSurvey e note di regia. |
-| **18** | CI su GitHub Actions | `POSSIBILE IN FUTURO` | Differito | `DIFFERITO` | Non bloccante per l'operatività; pianificabile post v1.0.0. |
-| **19** | Caso demo biblioteca end-to-end | `FATTO` | **M0** | `FATTO` | Verificato ed archiviato in `examples/demo_run_biblioteca/`. |
-| **20** | Studio caso reale archivio pubblico | `IPOTIZZATO` | **M11** | `FATTO` | Eseguito direttamente sul caso studio reale Noto Sondaggi in M11. |
-| **21** | Benchmark multi-modello (CSV) | `ABBOZZATO` | Differito | `DIFFERITO` | Matrice CSV predisposta; sessioni comparative posticipate. |
-| **22** | Integrazione analisi storiche pregresse | `ABBOZZATO` | **M4, M7, M11** | `FATTO` | Utilizzate per tarare le batterie in M4 e la scheda AGCOM in M7. |
-| **23** | Batterie anagrafiche e politiche Noto | `IPOTIZZATO` | **M9** | `FATTO` | Integrate a valle del riscontro di Noto. |
-| **24** | Verifica piattaforma LimeSurvey e CATI | `ABBOZZATO` | **M1, M2, Gate** | `FATTO` | LimeSurvey integrato in M1/M2; gestione CATI chiarita al Gate. |
-| **25** | Formato consegna intervistatori | `NON PRESENTE` | **M5, Gate, M9** | `FATTO` | Generatore Word sviluppato in M5 e confermato da Noto al Gate. |
-| **26** | Esportatore LimeSurvey (final.md -> TSV) | `ABBOZZATO` | **M1, M2** | `FATTO` | Priorità tecnica completata in autonomia totale. |
-| **27** | Generatore Word (.docx) intervistatore | `IPOTIZZATO` | **M5, M6** | `FATTO` | Script operativo con distinzione grafica note di regia. |
-| **28** | Contratti I/O `analysis-agent` | `ABBOZZATO` | Differito | `DIFFERITO` | Architettura predisposta; attivazione con Modulo B completo. |
-| **29** | Skill e template analisi descrittiva | `IPOTIZZATO` | Differito | `DIFFERITO` | Differito per dare priorità alla Scheda AGCOM (Task #33). |
-| **30** | Routine pesatura complessa IPF/Raking | `POSSIBILE IN FUTURO` | Differito | `DIFFERITO` | Formalmente differita per evitare sovra-ingegnerizzazione. |
-| **31** | Trimming ed efficienza campionaria pesi | `POSSIBILE IN FUTURO` | Differito | `DIFFERITO` | Formalmente differita coerentemente con Task #30. |
-| **32** | Convenzioni proprietarie pesatura Noto | `POSSIBILE IN FUTURO` | Differito | `DIFFERITO` | Formalmente differita coerentemente con Task #30. |
-| **33** | Skill reporting Scheda AGCOM | `IPOTIZZATO` | **M7, M8** | `FATTO` | Sviluppo prioritario completato in autonomia con template e script. |
-| **34** | Contratti I/O `dashboard-agent` | `ABBOZZATO` | Differito | `DIFFERITO` | Struttura architetturale predisposta. |
-| **35** | Layout brand e veste grafica Noto | `POSSIBILE IN FUTURO` | Differito | `DIFFERITO` | Programmata a completamento della pipeline analitica. |
+| # | Ambito / Task | Milestone Associata | Stato Attuale di Sviluppo | Protocollo di Collaudo Umano | Note Metodologiche & Tecniche |
+| :-: | :--- | :---: | :---: | :---: | :--- |
+| **01** | Regole deontologiche e GDPR/AI Act | **M0** | `ESEGUITO — IN TEST UMANO` | Protocollo H10 | Consolidato in `AGENTS.md` e `CLAUDE.md`. |
+| **02** | Specularità Antigravity e Claude | **M0, M2, M3, M6, M8** | `ESEGUITO — IN TEST UMANO` | Protocollo H10 | Mantenuta e validata con `scripts/check_mirror_sync.py` (100% integra). |
+| **03** | Separazione ruoli coordinatore/subagenti | **M0** | `ESEGUITO — IN TEST UMANO` | Protocollo H10 | Il coordinatore non redige mai direttamente i documenti specialistici. |
+| **04** | Protocollo Human-in-the-Loop in chat | **M0** | `ESEGUITO — IN TEST UMANO` | Protocollo H10 | Tracciamento in `runs/<caso>/status.md` con stop obbligatorio post-fase. |
+| **05** | Skill `noto-brief-structuring` | **M0, M9** | `ESEGUITO — IN TEST UMANO` | Protocollo H1 | Struttura consolidata in `templates/brief_template.md`; rifinitura committenze in M9. |
+| **06** | Mappatura committenze abituali Noto | **M9** | `IN ATTESA (GATE DI STOP)` | Attesa feedback Noto | Formalizzazione post-feedback Noto in `brief_template.md` (Milestone M9). |
+| **07** | Skill `noto-questionnaire-drafting` | **M0, M6** | `ESEGUITO — IN TEST UMANO` | Protocollo H2 | Standardizzata con codici 97/98/99 e sintassi di regia per intervistatore in M6. |
+| **08** | Batterie socio-demografiche e classi età | **M4, M9** | `ESEGUITO — IN TEST UMANO` | Protocolli H9, H2 | Baseline standard Istat/Eurostat implementata in M4; calibrazione Noto in M9. |
+| **09** | Serie storiche elettorali & `extractor` | **M3, M4, M9** | `ESEGUITO — IN TEST UMANO` | Protocollo H9 | Skill creata in M3, tool CLI in M4, libreria elettorale attiva; validazione Noto in M9. |
+| **10** | Griglia audit 11 colonne / 12 campi | **M0** | `ESEGUITO — IN TEST UMANO` | Protocollo H3 | Standard metodologico consolidato in `templates/methodology_template.md` (Opzioni A/B/C). |
+| **11** | Calibrazione euristiche commerciali | **Gate Stop, M9** | `IN ATTESA (GATE DI STOP)` | Attesa incontro Noto | Discusso nella sessione di allineamento e integrato nelle regole di audit in M9. |
+| **12** | Specificità CATI vs CAWI | **M5, M6, Gate** | `ESEGUITO — IN TEST UMANO` | Protocolli H3, H7 | Note di regia per operatore telefonico generate in M5/M6; verifica dialer al Gate. |
+| **13** | Checklist privacy Art. 9 GDPR | **M0, M10** | `ESEGUITO — IN TEST UMANO` | Protocollo H4 | Struttura preliminare attiva in `compliance_template.md`; raffinamento DPO in M10. |
+| **14** | Interlocuzione DPO / privacy | **Gate Stop, M10** | `IN ATTESA (GATE DI STOP)` | Attesa parere DPO | Incontro di raccordo e formalizzazione prescrizioni nel template in M10. |
+| **15** | Skill `noto-questionnaire-consolidation` | **M0, M2, M6** | `ESEGUITO — IN TEST UMANO` | Protocollo H5 | Integrata con trigger automatico per export LimeSurvey TSV e note di regia. |
+| **16** | Script `check_mirror_sync.py` | **M0, M3, M8** | `ESEGUITO — IN TEST UMANO` | Protocollo H10 | Operativo: verifica simmetria integrale per 7 agenti, 8 skill e 8 template standard. |
+| **17** | Linter `validate_runs.py` | **M0, M2, M6** | `ESEGUITO — IN TEST UMANO` | Protocollo H10 | Operativo: verifica colonne metodologiche, codici 97/98/99, TSV LimeSurvey e note regia. |
+| **18** | CI su GitHub Actions | Differito | `DIFFERITO` | Differito post v1.0.0 | Non bloccante per l'operatività; pianificabile post rilascio v1.0.0. |
+| **19** | Caso demo biblioteca end-to-end | **M0** | `ESEGUITO — IN TEST UMANO` | Protocolli H1–H10 | Verificato ed archiviato in `examples/demo_run_biblioteca/` con 9 artefatti completi. |
+| **20** | Studio caso reale archivio pubblico | **M11** | `IN ATTESA (GATE DI STOP)` | Attesa sblocco M11 | Esecuzione programmata direttamente sul caso reale Noto Sondaggi in M11. |
+| **21** | Benchmark multi-modello (CSV) | Differito | `DIFFERITO` | Differito | Matrice CSV predisposta (`examples/confronto_modelli.csv`); prove posticipate. |
+| **22** | Integrazione analisi storiche pregresse | **M4, M7, M11** | `ESEGUITO — IN TEST UMANO` | Protocollo H9 | Utilizzate per calibrare le batterie in M4 e la scheda AGCOM in M7; test Noto in M11. |
+| **23** | Batterie anagrafiche e politiche Noto | **M9** | `IN ATTESA (GATE DI STOP)` | Attesa dati Noto | Integrazione formulazioni ufficiali Noto programmata in M9 post-feedback. |
+| **24** | Verifica piattaforma LimeSurvey e CATI | **M1, M2, Gate** | `IN ATTESA (GATE DI STOP)` | Attesa riscontro CATI | LimeSurvey integrato (M1/M2); chiarimento eventuale applicativo CATI al Gate. |
+| **25** | Formato consegna intervistatori | **M5, Gate, M9** | `IN ATTESA (GATE DI STOP)` | Attesa conferma Noto | Generatore Word sviluppato in M5; in attesa di conferma da Noto al Gate di Stop. |
+| **26** | Esportatore LimeSurvey (final.md -> TSV) | **M1, M2** | `ESEGUITO — IN TEST UMANO` | Protocollo H6 | Priorità tecnica completata in autonomia con `scripts/export_limesurvey.py` (14 colonne). |
+| **27** | Generatore Word (.docx) intervistatore | **M5, M6** | `ESEGUITO — IN TEST UMANO` | Protocollo H7 | Script `scripts/generate_interviewer_guide.py` operativo con note di regia e stili. |
+| **28** | Contratti I/O `analysis-agent` | Differito | `DIFFERITO` | Modulo B avanzato | Architettura e scheda predisposte; attivazione subordinata a Modulo B completo. |
+| **29** | Skill e template analisi descrittiva | Differito | `DIFFERITO` | Modulo B avanzato | Differito per dare priorità assoluta alla Scheda Informativa AGCOM (Task #33). |
+| **30** | Routine pesatura complessa IPF/Raking | Differito | `DIFFERITO` | Modulo B avanzato | Formalmente differita per evitare sovra-ingegnerizzazione prematura. |
+| **31** | Trimming ed efficienza campionaria pesi | Differito | `DIFFERITO` | Modulo B avanzato | Formalmente differita coerentemente con Task #30. |
+| **32** | Convenzioni proprietarie pesatura Noto | Differito | `DIFFERITO` | Modulo B avanzato | Formalmente differita coerentemente con Task #30. |
+| **33** | Skill reporting Scheda AGCOM | **M7, M8** | `ESEGUITO — IN TEST UMANO` | Protocollo H8 | Sviluppo autonomo completato con `agcom_template.md`, `scripts/generate_agcom_report.py` e `reporting-agent`. |
+| **34** | Contratti I/O `dashboard-agent` | Differito | `DIFFERITO` | Modulo B avanzato | Struttura architetturale predisposta; attivazione post-fieldwork. |
+| **35** | Layout brand e veste grafica Noto | Differito | `DIFFERITO` | Modulo B avanzato | Programmata a completamento della pipeline analitica del Modulo B. |
 
 ---
 

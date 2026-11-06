@@ -897,6 +897,7 @@ def generate_agcom_report(
     pub_date: Optional[str] = None,
     fieldwork_date: Optional[str] = None,
     title: Optional[str] = None,
+    population: Optional[Union[int, str]] = None,
 ) -> Tuple[Path, str, List[str]]:
     """
     Funzione principale che orchestra l'estrazione, il calcolo e la scrittura della Scheda AGCOM.
@@ -923,10 +924,26 @@ def generate_agcom_report(
     # Estrazione metadati
     metadata = parse_case_metadata(case_path)
 
+    # Gestione popolazione finita se fornita
+    pop_int = None
+    if population is not None:
+        if isinstance(population, (int, float)):
+            pop_int = int(population)
+        elif isinstance(population, str):
+            clean_pop = population.replace(".", "").replace(",", "").strip()
+            if clean_pop.isdigit():
+                pop_int = int(clean_pop)
+
     # Applicazione eventuali override espliciti da parametri/CLI
     if sample_size is not None and sample_size > 0:
         metadata.planned_sample_size = sample_size
-        metadata.margin_of_error_pct = calculate_margin_of_error(metadata.planned_sample_size)
+        metadata.margin_of_error_pct = calculate_margin_of_error(
+            metadata.planned_sample_size, population_size=pop_int
+        )
+    elif pop_int is not None and pop_int > 0:
+        metadata.margin_of_error_pct = calculate_margin_of_error(
+            metadata.planned_sample_size, population_size=pop_int
+        )
     if client:
         metadata.client = client
     if buyer:
@@ -995,9 +1012,17 @@ def main():
     parser.add_argument(
         "-n",
         "--sample-size",
+        "--campione",
+        dest="sample_size",
         type=int,
         default=None,
         help="Numerosità campionaria pianificata n per il calcolo del margine d'errore (default estratto da brief)",
+    )
+    parser.add_argument(
+        "--popolazione",
+        dest="population",
+        default=None,
+        help="Dimensione della popolazione di riferimento per la correzione di popolazione finita (opzionale)",
     )
     parser.add_argument(
         "--client",
@@ -1078,6 +1103,7 @@ def main():
             pub_date=args.pub_date,
             fieldwork_date=args.fieldwork_date,
             title=args.title,
+            population=args.population,
         )
 
         print("=== Generatore Scheda Informativa AGCOM (Delibera 256/10/CSP) ===")
