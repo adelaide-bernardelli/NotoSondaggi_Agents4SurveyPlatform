@@ -404,6 +404,56 @@ def validate_limesurvey_file(path):
         
     return issues
 
+def validate_agcom_file(path):
+    """
+    Valida la conformita formale e metodologica della Scheda Informativa AGCOM
+    rispetto alla Delibera AGCOM n. 256/10/CSP (art. 5 Allegato A).
+    Supporta polimorficamente sia Path sia stringhe.
+    """
+    path = Path(path)
+    try:
+        content = path.read_text(encoding="utf-8")
+    except Exception as e:
+        return [f"Impossibile leggere il file della scheda AGCOM: {e}"]
+
+    if not content.strip():
+        return ["File della scheda AGCOM vuoto o privo di contenuto"]
+
+    issues = []
+    if not re.search(r"256/10/CSP", content, re.IGNORECASE):
+        issues.append("Riferimento normativo alla Delibera AGCOM 256/10/CSP mancante")
+    if "Noto Sondaggi" not in content:
+        issues.append("Soggetto realizzatore (Noto Sondaggi SRL) mancante")
+    if not re.search(r"\bCommittente\b", content, re.IGNORECASE):
+        issues.append("Campo 'Committente' mancante nei dati identificativi")
+    if not re.search(r"\bAcquirente\b", content, re.IGNORECASE):
+        issues.append("Campo 'Acquirente' mancante nei dati identificativi")
+    if not re.search(r"Popolazione di riferimento", content, re.IGNORECASE):
+        issues.append("Campo 'Popolazione di riferimento' mancante")
+    if not re.search(r"Estensione territoriale", content, re.IGNORECASE):
+        issues.append("Campo 'Estensione territoriale' mancante")
+    if not re.search(r"Metodo di campionamento", content, re.IGNORECASE):
+        issues.append("Campo 'Metodo di campionamento' mancante")
+    if not re.search(r"Numerosit[aà] campionaria", content, re.IGNORECASE):
+        issues.append("Campo 'Numerosità campionaria' mancante")
+    if not re.search(r"Metodo di raccolta dei dati", content, re.IGNORECASE):
+        issues.append("Campo 'Metodo di raccolta dei dati' mancante")
+    if "[DA VERIFICARE SUL CAMPO]" not in content:
+        issues.append("Marcatura obbligatoria '[DA VERIFICARE SUL CAMPO]' assente per parametri ex-post")
+    if not re.search(r"Margine d'errore", content, re.IGNORECASE):
+        issues.append("Indicazione del Margine d'errore teorico mancante")
+    if not re.search(r"95%", content):
+        issues.append("Indicazione del livello di confidenza al 95% mancante")
+    if not re.search(r"Testo Integrale delle Domande", content, re.IGNORECASE):
+        issues.append("Sezione 'Testo Integrale delle Domande' mancante")
+    for code in ("97", "98", "99"):
+        if not re.search(rf"\b{code}\b", content):
+            issues.append(f"Codice standard di non risposta '{code}' mancante nella scheda")
+    if "sondaggipoliticoelettorali.it" not in content:
+        issues.append("Riferimento al sito istituzionale di deposito 'www.sondaggipoliticoelettorali.it' mancante")
+
+    return issues
+
 def validate_case(case_dir):
     case_dir = Path(case_dir)
     print(f"\n--- Validazione Caso: {case_dir.name} ---")
@@ -458,6 +508,12 @@ def validate_case(case_dir):
         errs = validate_extracted_survey_file(ext_file)
         if errs:
             case_issues.extend([f"extracted_survey.md: {e}" for e in errs])
+
+    agcom_file = case_dir / "scheda_agcom.md"
+    if agcom_file.exists():
+        errs = validate_agcom_file(agcom_file)
+        if errs:
+            case_issues.extend([f"scheda_agcom.md: {e}" for e in errs])
             
     if case_issues:
         for err in case_issues:
@@ -511,6 +567,9 @@ def main():
                 elif p.name == "status.md" or "status" in p.name:
                     errs = validate_status_file(p)
                     tipo = "Stato Avanzamento"
+                elif p.name == "scheda_agcom.md" or "agcom" in p.name:
+                    errs = validate_agcom_file(p)
+                    tipo = "Scheda Informativa AGCOM"
                 else:
                     print(f"[FAIL] Tipo di file non riconosciuto per la validazione diretta: '{arg}'")
                     sys.exit(1)

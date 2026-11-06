@@ -93,7 +93,7 @@ I workflow sono definiti specularmente in `.agents/workflows/<nome>.md` e `.clau
 
 ---
 
-## 6. Mappa dei 7 Template Obbligatori e Tracciati Standard
+## 6. Mappa degli 8 Template Obbligatori e Tracciati Standard
 
 Ogni artefatto prodotto nella cartella `runs/<caso>/` deve rispettare fedelmente la struttura del corrispondente template in `templates/`:
 
@@ -106,6 +106,7 @@ Ogni artefatto prodotto nella cartella `runs/<caso>/` deve rispettare fedelmente
 | `templates/compliance_template.md` | `runs/<caso>/compliance.md` | `compliance-agent` | `noto-compliance-check` | Perimetro dati, tabella di screening domanda-per-domanda (Art. 9 GDPR, identificazione indiretta, *"Preferisco non rispondere"*), checklist GDPR/AI Act, blocchi per DPO/legale |
 | `templates/final_template.md` | `runs/<caso>/final.md`<br>`runs/<caso>/limesurvey_survey.txt` | `questionnaire-agent` | `noto-questionnaire-consolidation` | Metadati di consolidamento, registro modifiche accettate/scartate, prescrizioni compliance recepite, testo definitivo con codici `97/98/99` e istruzioni di regia standardizzate, mappa filtri, piano validazione empirica ed esportazione TSV LimeSurvey a 14 colonne standard |
 | `templates/extracted_survey_template.md` | `knowledge/extracted_*.md`<br>`runs/<caso>/extracted_survey.md` | `questionnaire-agent` | `noto-survey-extractor` | Metadati studio storico (committente, target, periodo), lista strutturata domande con codice originale, costrutto, formulazione testuale esatta, tipologia domanda, scala/opzioni con codifica standard `97/98/99`, mappa batterie standard e note di comparabilità per serie storiche |
+| `templates/agcom_template.md` | `runs/<caso>/scheda_agcom.md` | `questionnaire-agent` / `reporting-agent` | `scripts/generate_agcom_report.py` | Scheda informativa obbligatoria ex art. 5 Delibera AGCOM 256/10/CSP: soggetto realizzatore (Noto Sondaggi SRL), committente, acquirente, data/periodo, popolazione, estensione territoriale, metodo campionamento, metodo raccolta dati, consistenza campione e tassi di risposta/rifiuto (con `[DA VERIFICARE SUL CAMPO]`), ponderazione, margine d'errore teorico (95% confidenza), testo integrale quesiti con codici standard `97/98/99` e deposito su www.sondaggipoliticoelettorali.it |
 
 Per il confronto sperimentale tra diversi modelli LLM a parità di caso e di input è inoltre disponibile il tracciato standard `examples/confronto_modelli.csv` (`case_id,ruolo,provider,modello_versione,data_run,prompt_versione,tempo_ricercatore_min,issue_rilevate,issue_verificate,modifiche_accettate,note`). Per il fieldwork bridge verso la piattaforma di rilevazione LimeSurvey (CATI/CAWI) è standardizzato il formato nativo tab-delimited a 14 colonne standard `runs/<caso>/limesurvey_survey.txt`, generato automaticamente tramite `scripts/export_limesurvey.py` al termine del consolidamento.
 

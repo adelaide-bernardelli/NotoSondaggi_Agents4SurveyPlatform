@@ -52,7 +52,7 @@ class TestQABaseline(unittest.TestCase):
     def test_templates_presence(self):
         ok, msg = check_templates()
         self.assertTrue(ok, f"Template obbligatori non completi: {msg}")
-        self.assertEqual(msg, "Tutti i 7 template obbligatori sono presenti")
+        self.assertEqual(msg, "Tutti gli 8 template obbligatori sono presenti")
 
     def test_extracted_survey_template_content(self):
         """Verifica la completezza dei campi del template extracted_survey_template.md."""

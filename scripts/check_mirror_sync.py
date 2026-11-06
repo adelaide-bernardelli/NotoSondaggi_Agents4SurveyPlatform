@@ -157,6 +157,7 @@ def check_templates():
         "compliance_template.md",
         "final_template.md",
         "extracted_survey_template.md",
+        "agcom_template.md",
     ]
     missing = [t for t in expected if not (templates_dir / t).exists()]
     if missing:
@@ -165,7 +166,7 @@ def check_templates():
     unexpected = set(templates_found) - set(expected)
     if unexpected:
         return False, f"Template non previsti in templates/: {unexpected}"
-    return True, f"Tutti i {len(expected)} template obbligatori sono presenti"
+    return True, f"Tutti gli {len(expected)} template obbligatori sono presenti"
 
 def main():
     print("=== Verifica Sincronizzazione Architetturale Noto Sondaggi ===")
